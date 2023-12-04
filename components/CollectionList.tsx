@@ -25,7 +25,7 @@ export default function CollectionList({ className }: Props) {
     try {
       setIsLoading(true);
       const { data, error }: PostgrestSingleResponse<BookmarkList[]> = await supabase
-        .from('bookmark_list')
+        .from('bookmark_lists')
         .select();
 
       if (error) {
@@ -44,7 +44,7 @@ export default function CollectionList({ className }: Props) {
       setIsCreating(true);
 
       const { data, error }: PostgrestSingleResponse<{ id: string, title: string }[]> = await supabase
-        .from('bookmark_list')
+        .from('bookmark_lists')
         .insert({
           title: listName,
         })

@@ -30,11 +30,11 @@ export default function Dialog({ visible, onHide, children, className }: Props) 
     <dialog ref={dialogElement} className={`${className}`}>
       <div
         onClick={onHide}
-        className="fixed top-0 left-0 w-full h-full bg-black/80 cursor-pointer flex items-center justify-center px-1"
+        className="fixed top-0 left-0 w-full h-full bg-black/80 cursor-pointer px-1"
       >
         <div
           onClick={onClickContent}
-          className="bg-slate-950 text-white w-[500px] border-2 border-white/30 rounded-xl shadow-xl cursor-auto p-6"
+          className="slide-in bg-slate-950 text-white max-w-[500px] border-2 border-white/30 rounded-xl shadow-xl cursor-auto p-6 mt-[20dvh] mx-auto"
         >
           {children}
         </div>

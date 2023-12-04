@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import { Bookmark } from '@/types/bookmark';
+import { Bookmark, BookmarkList } from '@/types/bookmark';
 import Button from '@/components/Button';
 import BookmarkItem from '@/components/BookmarkItem';
 import Dialog from '@/components/Dialog';
@@ -10,7 +10,7 @@ import { extractMetaData } from '@/lib/services/jsonlink';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useSupabase } from '@/lib/composables/useSupabase';
-import { BiPlus } from 'react-icons/bi';
+import { MdOutlineBookmarkAdd } from 'react-icons/md';
 
 interface Props {
     className?: string
@@ -19,6 +19,8 @@ interface Props {
 export default function Bookmarks({ className }: Props) {
   const { id: listId } = useParams<{ id: string }>();
   const supabase = useSupabase();
+
+  const [listTitle, setListTitle] = useState('');
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,16 +31,22 @@ export default function Bookmarks({ className }: Props) {
   const loadBookmarks = async () => {
     try {
       setIsLoading(true);
-      const { data: bookmarks }: PostgrestSingleResponse<Bookmark[]> = await supabase
-        .from('bookmark')
-        .select()
-        .eq('list_id', listId);
 
-      if (bookmarks) {
-        setBookmarks(bookmarks);
-      } else {
-        setBookmarks([]);
+      const { data: bookmarkList }: PostgrestSingleResponse<BookmarkList & { bookmarks: Bookmark[] }> = await supabase
+        .from('bookmark_lists')
+        .select(`
+          *,
+          bookmarks (*)
+        `)
+        .eq('id', listId)
+        .single();
+
+      if (!bookmarkList) {
+        return;
       }
+
+      setListTitle(bookmarkList.title);
+      setBookmarks(bookmarkList.bookmarks);
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +58,7 @@ export default function Bookmarks({ className }: Props) {
       const bookmark = await extractMetaData(url);
 
       const { data, error }: PostgrestSingleResponse<Bookmark> = await supabase
-        .from('bookmark')
+        .from('bookmarks')
         .insert({
           ...bookmark,
           list_id: listId,
@@ -110,15 +118,6 @@ export default function Bookmarks({ className }: Props) {
 
   return (
     <>
-      <div className="flex justify-center mb-6">
-        <Button
-          onClick={() => setIsDialogVisible(true)}
-          className="text-2xl !font-bold !py-3 !px-6 flex items-center gap-1"
-        >
-          <BiPlus />
-          New bookmark
-        </Button>
-      </div>
       {
         isLoading ? (
           <div className="flex justify-center mt-12">
@@ -128,7 +127,18 @@ export default function Bookmarks({ className }: Props) {
             />
           </div>
         ) : (
-          <ListView />
+          <>
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-center text-3xl font-bold">{listTitle}</h1>
+              <Button
+                onClick={() => setIsDialogVisible(true)}
+                className="text-2xl"
+              >
+                <MdOutlineBookmarkAdd />
+              </Button>
+            </div>
+            <ListView />
+          </>
         )
       }
 
