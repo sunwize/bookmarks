@@ -79,6 +79,11 @@ export default function Bookmarks({ className }: Props) {
     }
   };
 
+  const onHide = () => {
+    setIsDialogVisible(false);
+    setUrl('');
+  };
+
   const ListView = useCallback(() => (
     <>
       {
@@ -129,7 +134,7 @@ export default function Bookmarks({ className }: Props) {
 
       <Dialog
         visible={isDialogVisible}
-        onHide={() => setIsDialogVisible(false)}
+        onHide={onHide}
       >
         <p className="text-2xl text-center font-bold opacity-80 mb-6">Add a bookmark</p>
         <label>

@@ -42,17 +42,17 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
 
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:url" content="https://colinclisson.com" />
+        <meta name="twitter:url" content="https://bookmarks-gamma-kohl.vercel.app" />
         <meta name="twitter:title" content="Bookmarks" />
         <meta name="twitter:description" content="Your new favorite bookmark place." />
-        <meta name="twitter:image" content="https://yourdomain.com/icons/android-chrome-192x192.png" />
+        <meta name="twitter:image" content="https://bookmarks-gamma-kohl.vercel.app/icons/android-chrome-192x192.png" />
         <meta name="twitter:creator" content="@Sunwize" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Bookmarks" />
         <meta property="og:description" content="Your new favorite bookmark place." />
         <meta property="og:site_name" content="Bookmarks" />
-        <meta property="og:url" content="https://colinclisson.com" />
-        <meta property="og:image" content="https://yourdomain.com/icons/apple-touch-icon.png" />
+        <meta property="og:url" content="https://bookmarks-gamma-kohl.vercel.app" />
+        <meta property="og:image" content="https://bookmarks-gamma-kohl.vercel.app/icons/apple-touch-icon.png" />
       </head>
       <body className={inter.className}>
         <main className="bg-white/10 min-h-[100dvh] max-w-[650px] mx-auto py-6 md:py-12 px-2 md:px-6">{children}</main>
