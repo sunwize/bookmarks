@@ -53,13 +53,18 @@ export default function Bookmarks({ className }: Props) {
 
   const onBookmarkAdded = () => {
     return supabase.channel('public:data')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bookmarks' }, (payload) => {
-        const bookmark = payload.new as Bookmark & { list_id: string };
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'bookmarks', filter: `list_id=eq.${listId}` },
+        (payload) => {
+          const bookmark = payload.new as Bookmark & { list_id: string };
 
-        if (listId === bookmark.list_id) {
-          setBookmarks((val) => [bookmark, ...val]);
-        }
-      })
+          console.log('prout');
+
+          if (listId === bookmark.list_id) {
+            setBookmarks((val) => [bookmark, ...val]);
+          }
+        })
       .subscribe();
   };
 
