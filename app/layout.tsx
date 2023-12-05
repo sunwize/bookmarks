@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Navbar from '@/components/Navbar';
+import { CollectionSelectorContextProvider } from '@/lib/composables/useCollectionSelector';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -64,7 +65,11 @@ export default function RootLayout({
       <Head />
       <body className={`flex flex-col min-h-[100dvh] ${inter.className}`}>
         <Navbar />
-        <main className="flex flex-col w-full flex-1 bg-white/10 max-w-[650px] mx-auto py-6 px-2 md:px-6">{children}</main>
+        <main className="flex flex-col w-full flex-1 bg-white/10 max-w-[650px] mx-auto py-6 px-2 md:px-6">
+          <CollectionSelectorContextProvider>
+            {children}
+          </CollectionSelectorContextProvider>
+        </main>
       </body>
     </html>
   );
