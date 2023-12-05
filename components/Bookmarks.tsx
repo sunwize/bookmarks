@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Bookmark, BookmarkList } from '@/types/bookmark';
 import Button from '@/components/Button';
 import BookmarkItem from '@/components/BookmarkItem';
@@ -9,8 +9,6 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { MdOutlineBookmarkAdd } from 'react-icons/md';
-import Drawer from '@/components/Drawer';
-import { extractMetaData } from '@/lib/services/jsonlink';
 import { CollectionSelectorContext } from '@/lib/composables/useCollectionSelector';
 
 interface Props {
@@ -50,6 +48,18 @@ export default function Bookmarks({ className }: Props) {
     }
   };
 
+  const onBookmarkAdded = () => {
+    return supabase.channel('public:data')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bookmarks' }, (payload) => {
+        const bookmark = payload.new as Bookmark & { list_id: string };
+
+        if (listId === bookmark.list_id) {
+          setBookmarks((val) => [bookmark, ...val]);
+        }
+      })
+      .subscribe();
+  };
+
   const ListView = useCallback(() => (
     <>
       {
@@ -72,6 +82,12 @@ export default function Bookmarks({ className }: Props) {
 
   useEffect(() => {
     loadBookmarks();
+
+    const listener = onBookmarkAdded();
+
+    return () => {
+      listener.unsubscribe();
+    };
   }, []);
 
   return (
