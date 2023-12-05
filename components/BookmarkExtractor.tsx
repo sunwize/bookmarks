@@ -1,9 +1,12 @@
-import { ChangeEvent, useContext, useState } from 'react';
+'use client';
+
+import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import Button from '@/components/Button';
 import { AiOutlineLoading } from 'react-icons/ai';
 import Drawer from '@/components/Drawer';
 import { extractMetaData } from '@/lib/services/jsonlink';
 import { CollectionSelectorContext } from '@/lib/composables/useCollectionSelector';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface Props {
     visible: boolean
@@ -11,15 +14,17 @@ interface Props {
 }
 
 export default function BookmarkExtractor({ visible, onHide }: Props) {
+  const params = useSearchParams();
+  const router = useRouter();
   const { setBookmark, setIsCollectionSelectorVisible } = useContext(CollectionSelectorContext);
 
   const [bookmarkUrl, setBookmarkUrl] = useState('');
   const [isExtractingBookmark, setIsExtractingBookmark] = useState(false);
 
-  const extractBookmark = async () => {
+  const extractBookmark = async (url: string = bookmarkUrl) => {
     try {
       setIsExtractingBookmark(true);
-      const bookmark = await extractMetaData(bookmarkUrl);
+      const bookmark = await extractMetaData(url);
       setBookmark(bookmark);
       onHide?.();
       setTimeout(() => setIsCollectionSelectorVisible(true), 100);
@@ -28,6 +33,15 @@ export default function BookmarkExtractor({ visible, onHide }: Props) {
       setIsExtractingBookmark(false);
     }
   };
+
+  useEffect(() => {
+    const url = params.get('link');
+
+    if (visible && url) {
+      extractBookmark(url);
+      router.push('/');
+    }
+  }, [visible]);
 
   return (
     <Drawer

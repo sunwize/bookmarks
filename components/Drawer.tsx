@@ -45,7 +45,7 @@ export default function Drawer({ visible, onHide, className, children }: Props) 
         <div className="slide-in relative flex-1">
           <div
             onClick={onClickContent}
-            className="absolute w-full h-full mt-[50dvh] top-0 left-1/2 -translate-x-1/2 bg-slate-950 text-white rounded-t-3xl overflow-hidden max-w-[650px]"
+            className="absolute w-full h-full mt-[50dvh] top-0 left-1/2 -translate-x-1/2 bg-slate-950 text-white rounded-t-3xl overflow-hidden cursor-auto max-w-[650px]"
           >
             <div className="bg-white/10 w-full flex items-center justify-center py-3">
               <div className="w-14 h-1 bg-white/50 rounded" />

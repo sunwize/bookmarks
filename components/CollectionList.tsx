@@ -8,6 +8,7 @@ import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { MdOutlineBookmarkAdd } from 'react-icons/md';
 import Button from '@/components/Button';
 import { CollectionSelectorContext } from '@/lib/composables/useCollectionSelector';
+import Link from 'next/link';
 
 interface Props {
   className?: string
@@ -45,15 +46,15 @@ export default function CollectionList({ className }: Props) {
         {
           bookmarkLists.map((bookmarkList, index) => (
             <li key={index}>
-              <a
+              <Link
                 href={`/list/${bookmarkList.id}`}
                 className="
-                block w-full text-left border-2 border-dashed border-white/20 rounded-xl px-4 py-5 transition
-                active:bg-white/10 md:hover:bg-white/10
-              "
+                  block w-full text-left border-2 border-dashed border-white/20 rounded-xl px-4 py-5 transition
+                  active:bg-white/10 md:hover:bg-white/10
+                "
               >
                 <span className="text-2xl font-medium tracking-wide">{bookmarkList.title}</span>
-              </a>
+              </Link>
             </li>
           ))
         }
