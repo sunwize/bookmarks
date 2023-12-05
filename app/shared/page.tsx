@@ -9,26 +9,19 @@ export default function Shared() {
   const params = useSearchParams();
   const { setIsBookmarkExtractorVisible } = useContext(CollectionSelectorContext);
 
-  const url = params.get('url');
+  const url = params.get('description');
 
-  // useEffect(() => {
-  //   if (!url) {
-  //     return router.push('/');
-  //   }
-  //
-  //   setIsBookmarkExtractorVisible(true);
-  // }, []);
+  useEffect(() => {
+    if (!url) {
+      return router.push('/');
+    }
+
+    setIsBookmarkExtractorVisible(true);
+  }, []);
 
   return (
     <>
-      <h1 className="text-center text-xl font-bold mb-6">A link has been shared!</h1>
-      <ul>
-        {
-          Array.from(params.entries()).map(([key, value], index) => (
-            <li key={index}>{key}: {value}</li>
-          ))
-        }
-      </ul>
+      <h1 className="text-center text-xl font-bold">A link has been shared!</h1>
     </>
   );
 }
