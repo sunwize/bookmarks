@@ -9,6 +9,7 @@ import { useSupabase } from '@/lib/composables/useSupabase';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
 import { CollectionSelectorContext } from '@/lib/composables/useCollectionSelector';
 import BookmarkItem from '@/components/BookmarkItem';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   visible: boolean
@@ -17,6 +18,7 @@ interface Props {
 
 export default function CollectionSelector({ visible, onHide }: Props) {
   const supabase = useSupabase();
+  const router = useRouter();
   const { bookmark, setIsCollectionSelectorVisible } = useContext(CollectionSelectorContext);
 
   const [bookmarkLists, setBookmarkLists] = useState<BookmarkList[]>([]);
@@ -56,6 +58,7 @@ export default function CollectionSelector({ visible, onHide }: Props) {
     } finally {
       setIsAdding(false);
       setIsCollectionSelectorVisible(false);
+      router.push(`/list/${listId}`);
     }
   };
 
