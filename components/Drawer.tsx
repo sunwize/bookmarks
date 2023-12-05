@@ -6,11 +6,10 @@ import { IoIosClose } from 'react-icons/io';
 interface Props {
     visible: boolean
     onHide?: () => void
-    className?: string
     children: React.ReactNode
 }
 
-export default function Drawer({ visible, onHide, className, children }: Props) {
+export default function Drawer({ visible, onHide, children }: Props) {
   const dialogElement = useRef<HTMLDialogElement>(null);
 
   const onClickContent: MouseEventHandler<HTMLDivElement> = (event) => {
@@ -29,16 +28,13 @@ export default function Drawer({ visible, onHide, className, children }: Props) 
   }, [visible]);
 
   return (
-    <dialog
-      ref={dialogElement}
-      className={`${className}`}
-    >
+    <dialog ref={dialogElement}>
       <div
         onClick={onHide}
         className="overflow-y-auto scrollbar-hidden fixed z-20 top-0 left-0 flex flex-col w-full h-full bg-black/80 cursor-pointer"
       >
-        <div className="sticky top-0">
-          <button className="flex justify-end w-full text-white/50 active:text-white md:hover:text-white">
+        <div className="sticky flex justify-end top-0">
+          <button className="text-white/50 active:text-white md:hover:text-white outline-0">
             <IoIosClose size={50} />
           </button>
         </div>
