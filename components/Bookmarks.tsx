@@ -59,8 +59,6 @@ export default function Bookmarks({ className }: Props) {
         (payload) => {
           const bookmark = payload.new as Bookmark & { list_id: string };
 
-          console.log('prout');
-
           if (listId === bookmark.list_id) {
             setBookmarks((val) => [bookmark, ...val]);
           }
