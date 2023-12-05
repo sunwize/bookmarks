@@ -21,8 +21,9 @@ export default function BookmarkExtractor({ visible, onHide }: Props) {
   const [bookmarkUrl, setBookmarkUrl] = useState('');
   const [isExtractingBookmark, setIsExtractingBookmark] = useState(false);
 
-  const extractBookmark = async (url: string = bookmarkUrl) => {
+  const extractBookmark = async (url: string) => {
     try {
+      console.log(url);
       setIsExtractingBookmark(true);
       const bookmark = await extractMetaData(url);
       setBookmark(bookmark);
@@ -65,7 +66,7 @@ export default function BookmarkExtractor({ visible, onHide }: Props) {
       </label>
       <div className="flex justify-end text-xl mt-6">
         <Button
-          onClick={extractBookmark}
+          onClick={() => extractBookmark(bookmarkUrl)}
           disabled={!bookmarkUrl || isExtractingBookmark}
           className="flex items-center gap-2"
         >
