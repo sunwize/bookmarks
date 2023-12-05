@@ -13,7 +13,7 @@ export default function Shared() {
 
   useEffect(() => {
     if (!url) {
-      return router.push('/');
+      return router.replace('/');
     }
 
     setIsBookmarkExtractorVisible(true);
