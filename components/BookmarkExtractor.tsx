@@ -35,7 +35,7 @@ export default function BookmarkExtractor({ visible, onHide }: Props) {
   };
 
   useEffect(() => {
-    const url = params.get('link');
+    const url = params.get('url');
 
     if (visible && url) {
       extractBookmark(url);

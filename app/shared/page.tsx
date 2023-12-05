@@ -9,7 +9,7 @@ export default function Shared() {
   const params = useSearchParams();
   const { setIsBookmarkExtractorVisible } = useContext(CollectionSelectorContext);
 
-  const url = params.get('link');
+  const url = params.get('url');
 
   useEffect(() => {
     if (!url) {
