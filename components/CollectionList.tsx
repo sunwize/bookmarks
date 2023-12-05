@@ -25,7 +25,8 @@ export default function CollectionList({ className }: Props) {
       setIsLoading(true);
       const { data, error }: PostgrestSingleResponse<BookmarkList[]> = await supabase
         .from('bookmark_lists')
-        .select();
+        .select()
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error(error);

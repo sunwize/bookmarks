@@ -28,21 +28,24 @@ export default function Bookmarks({ className }: Props) {
     try {
       setIsLoading(true);
 
-      const { data: bookmarkList }: PostgrestSingleResponse<BookmarkList & { bookmarks: Bookmark[] }> = await supabase
+      const { data: bookmarkList }: PostgrestSingleResponse<BookmarkList> = await supabase
         .from('bookmark_lists')
-        .select(`
-          *,
-          bookmarks (*)
-        `)
+        .select()
         .eq('id', listId)
         .single();
 
-      if (!bookmarkList) {
+      const { data: bookmarks }: PostgrestSingleResponse<Bookmark[]> = await supabase
+        .from('bookmarks')
+        .select()
+        .order('created_at', { ascending: false })
+        .eq('list_id', listId);
+
+      if (!bookmarkList || !bookmarks) {
         return;
       }
 
       setListTitle(bookmarkList.title);
-      setBookmarks(bookmarkList.bookmarks);
+      setBookmarks(bookmarks);
     } finally {
       setIsLoading(false);
     }
