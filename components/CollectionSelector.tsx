@@ -17,7 +17,7 @@ interface Props {
 
 export default function CollectionSelector({ visible, onHide }: Props) {
   const supabase = useSupabase();
-  const { bookmark, setIsCollectionSelectorVisible: setIsCollectionSelectorVisible } = useContext(CollectionSelectorContext);
+  const { bookmark, setIsCollectionSelectorVisible } = useContext(CollectionSelectorContext);
 
   const [bookmarkLists, setBookmarkLists] = useState<BookmarkList[]>([]);
   const [isAdding, setIsAdding] = useState(false);

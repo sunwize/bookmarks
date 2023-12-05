@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function BookmarkExtractor({ visible, onHide }: Props) {
-  const { setBookmark, setIsCollectionSelectorVisible: setCollectionSelectorVisible } = useContext(CollectionSelectorContext);
+  const { setBookmark, setIsCollectionSelectorVisible } = useContext(CollectionSelectorContext);
 
   const [bookmarkUrl, setBookmarkUrl] = useState('');
   const [isExtractingBookmark, setIsExtractingBookmark] = useState(false);
@@ -22,7 +22,7 @@ export default function BookmarkExtractor({ visible, onHide }: Props) {
       const bookmark = await extractMetaData(bookmarkUrl);
       setBookmark(bookmark);
       onHide?.();
-      setTimeout(() => setCollectionSelectorVisible(true), 100);
+      setTimeout(() => setIsCollectionSelectorVisible(true), 100);
       setBookmarkUrl('');
     } finally {
       setIsExtractingBookmark(false);
