@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { BookmarkList } from '@/types/bookmark';
+import { Bookmark, BookmarkList } from '@/types/bookmark';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
@@ -40,6 +40,18 @@ export default function CollectionList({ className }: Props) {
     }
   };
 
+  const onCollectionAdded = () => {
+    return supabase.channel('public:data')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'bookmark_lists' },
+        (payload) => {
+          const collection = payload.new as BookmarkList;
+          setBookmarkLists((val) => [collection, ...val]);
+        })
+      .subscribe();
+  };
+
   const ListView = useCallback(() => (
     bookmarkLists.length > 0 ? (
       <ul className={`grid grid-cols-1 gap-2 ${className}`}>
@@ -66,6 +78,12 @@ export default function CollectionList({ className }: Props) {
 
   useEffect(() => {
     loadBookmarkLists();
+
+    const listener = onCollectionAdded();
+
+    return () => {
+      listener.unsubscribe();
+    };
   }, []);
 
   return (

@@ -19,7 +19,11 @@ interface Props {
 export default function CollectionSelector({ visible, onHide }: Props) {
   const supabase = useSupabase();
   const router = useRouter();
-  const { bookmark, setIsCollectionSelectorVisible } = useContext(CollectionSelectorContext);
+  const {
+    bookmark,
+    setIsCollectionSelectorVisible,
+    setIsCollectionCreatorVisible,
+  } = useContext(CollectionSelectorContext);
 
   const [bookmarkLists, setBookmarkLists] = useState<BookmarkList[]>([]);
   const [isAdding, setIsAdding] = useState(false);
@@ -62,9 +66,16 @@ export default function CollectionSelector({ visible, onHide }: Props) {
     }
   };
 
+  const openCollectionCreator = () => {
+    setIsCollectionSelectorVisible(false);
+    setIsCollectionCreatorVisible(true);
+  };
+
   useEffect(() => {
-    loadBookmarkLists();
-  }, []);
+    if (visible) {
+      loadBookmarkLists();
+    }
+  }, [visible]);
 
   return (
     <Drawer
@@ -80,7 +91,12 @@ export default function CollectionSelector({ visible, onHide }: Props) {
       }
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Collections</h1>
-        <Button disabled={isAdding}>+ New collection</Button>
+        <Button
+          onClick={openCollectionCreator}
+          disabled={isAdding}
+        >
+          + New collection
+        </Button>
       </div>
       <div className="border-b-2 border-white/20 -mx-6" />
       <ul className="grid grid-cols-1 gap-2">

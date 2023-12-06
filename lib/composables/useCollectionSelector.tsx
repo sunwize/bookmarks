@@ -4,12 +4,15 @@ import { createContext, useEffect, useState } from 'react';
 import CollectionSelector from '@/components/CollectionSelector';
 import { Bookmark } from '@/types/bookmark';
 import BookmarkExtractor from '@/components/BookmarkExtractor';
+import CollectionCreator from '@/components/CollectionCreator';
 
 interface ContextProps {
     isBookmarkExtractorVisible: boolean
     setIsBookmarkExtractorVisible: (visible: boolean) => void
     isCollectionSelectorVisible: boolean
     setIsCollectionSelectorVisible: (visible: boolean) => void
+    isCollectionCreatorVisible: boolean
+    setIsCollectionCreatorVisible: (visible: boolean) => void
     bookmark?: Omit<Bookmark, 'id'>
     setBookmark: (bookmark: Omit<Bookmark, 'id'>) => void
 }
@@ -19,6 +22,8 @@ export const CollectionSelectorContext = createContext<ContextProps>({
   setIsBookmarkExtractorVisible: (visible: boolean) => {},
   isCollectionSelectorVisible: false,
   setIsCollectionSelectorVisible: (visible: boolean) => {},
+  isCollectionCreatorVisible: false,
+  setIsCollectionCreatorVisible: (visible: boolean) => {},
   bookmark: undefined,
   setBookmark: (bookmark: Omit<Bookmark, 'id'>) => {},
 });
@@ -26,13 +31,21 @@ export const CollectionSelectorContext = createContext<ContextProps>({
 export function CollectionSelectorContextProvider({ children }: {children: React.ReactNode}) {
   const [isBookmarkExtractorVisible, _setIsBookmarkExtractorVisible] = useState(false);
   const [isCollectionSelectorVisible, _setIsCollectionSelectorVisible] = useState(false);
+  const [isCollectionCreatorVisible, _setIsCollectionCreatorVisible] = useState(false);
   const [bookmark, _setBookmark] = useState<Omit<Bookmark, 'id'>>();
 
-  const isDialogOpen = isBookmarkExtractorVisible || isCollectionSelectorVisible;
+  const isDialogOpen = isBookmarkExtractorVisible || isCollectionSelectorVisible || isCollectionCreatorVisible;
 
   const setBookmark = (val: Omit<Bookmark, 'id'>) => _setBookmark(() => val);
   const setIsCollectionSelectorVisible = (val: boolean) => _setIsCollectionSelectorVisible(() => val);
   const setIsBookmarkExtractorVisible = (val: boolean) => _setIsBookmarkExtractorVisible(() => val);
+  const setIsCollectionCreatorVisible = (val: boolean) => {
+    _setIsCollectionCreatorVisible(() => val);
+
+    if (!val) {
+      _setIsCollectionSelectorVisible(() => true);
+    }
+  };
 
   useEffect(() => {
     document.body.classList.toggle('overflow-hidden', isDialogOpen);
@@ -45,6 +58,8 @@ export function CollectionSelectorContextProvider({ children }: {children: React
         setIsBookmarkExtractorVisible,
         isCollectionSelectorVisible,
         setIsCollectionSelectorVisible,
+        isCollectionCreatorVisible,
+        setIsCollectionCreatorVisible,
         bookmark,
         setBookmark,
       }}
@@ -56,6 +71,10 @@ export function CollectionSelectorContextProvider({ children }: {children: React
       <CollectionSelector
         visible={isCollectionSelectorVisible}
         onHide={() => _setIsCollectionSelectorVisible(false)}
+      />
+      <CollectionCreator
+        visible={isCollectionCreatorVisible}
+        onHide={() => setIsCollectionCreatorVisible(false)}
       />
       {children}
     </CollectionSelectorContext.Provider>
