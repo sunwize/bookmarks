@@ -23,7 +23,6 @@ export default function BookmarkExtractor({ visible, onHide }: Props) {
 
   const extractBookmark = async (url: string) => {
     try {
-      console.log(url);
       setIsExtractingBookmark(true);
       const bookmark = await extractMetaData(url);
       setBookmark(bookmark);
