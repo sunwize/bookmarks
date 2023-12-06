@@ -23,8 +23,6 @@ export default function Drawer({ visible, onHide, children }: Props) {
     } else {
       dialogElement.current?.close();
     }
-
-    document.body.classList.toggle('overflow-hidden', visible);
   }, [visible]);
 
   return (

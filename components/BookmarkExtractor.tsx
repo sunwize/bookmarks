@@ -27,7 +27,7 @@ export default function BookmarkExtractor({ visible, onHide }: Props) {
       const bookmark = await extractMetaData(url);
       setBookmark(bookmark);
       onHide?.();
-      setTimeout(() => setIsCollectionSelectorVisible(true), 100);
+      setIsCollectionSelectorVisible(true);
       setBookmarkUrl('');
     } finally {
       setIsExtractingBookmark(false);

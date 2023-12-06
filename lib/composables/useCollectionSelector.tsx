@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import CollectionSelector from '@/components/CollectionSelector';
 import { Bookmark } from '@/types/bookmark';
 import BookmarkExtractor from '@/components/BookmarkExtractor';
@@ -28,9 +28,15 @@ export function CollectionSelectorContextProvider({ children }: {children: React
   const [isCollectionSelectorVisible, _setIsCollectionSelectorVisible] = useState(false);
   const [bookmark, _setBookmark] = useState<Omit<Bookmark, 'id'>>();
 
+  const isDialogOpen = isBookmarkExtractorVisible || isCollectionSelectorVisible;
+
   const setBookmark = (val: Omit<Bookmark, 'id'>) => _setBookmark(() => val);
   const setIsCollectionSelectorVisible = (val: boolean) => _setIsCollectionSelectorVisible(() => val);
   const setIsBookmarkExtractorVisible = (val: boolean) => _setIsBookmarkExtractorVisible(() => val);
+
+  useEffect(() => {
+    document.body.classList.toggle('overflow-hidden', isDialogOpen);
+  }, [isDialogOpen]);
 
   return (
     <CollectionSelectorContext.Provider
