@@ -9,7 +9,7 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { MdOutlineBookmarkAdd } from 'react-icons/md';
-import { CollectionSelectorContext } from '@/lib/composables/useCollectionSelector';
+import { DialogsContext } from '@/lib/contexts/DialogsContext';
 
 interface Props {
     className?: string
@@ -18,11 +18,12 @@ interface Props {
 export default function Bookmarks({ className }: Props) {
   const { id: listId } = useParams<{ id: string }>();
   const supabase = useSupabase();
-  const { setIsBookmarkExtractorVisible } = useContext(CollectionSelectorContext);
+  const { setIsBookmarkExtractorVisible } = useContext(DialogsContext);
 
   const [listTitle, setListTitle] = useState('');
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   const loadBookmarks = async () => {
     try {
@@ -41,6 +42,7 @@ export default function Bookmarks({ className }: Props) {
         .eq('list_id', listId);
 
       if (!bookmarkList || !bookmarks) {
+        setIsError(true);
         return;
       }
 
@@ -95,6 +97,12 @@ export default function Bookmarks({ className }: Props) {
       listener.unsubscribe();
     };
   }, []);
+
+  if (isError) {
+    return (
+      <p className="text-xl text-center opacity-50">Bookmark list not found.</p>
+    );
+  }
 
   return (
     <>

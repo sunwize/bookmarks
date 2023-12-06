@@ -2,12 +2,12 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useEffect } from 'react';
-import { CollectionSelectorContext } from '@/lib/composables/useCollectionSelector';
+import { DialogsContext } from '@/lib/contexts/DialogsContext';
 
 export default function Shared() {
   const router = useRouter();
   const params = useSearchParams();
-  const { setIsBookmarkExtractorVisible } = useContext(CollectionSelectorContext);
+  const { setIsBookmarkExtractorVisible } = useContext(DialogsContext);
 
   const url = params.get('description');
 

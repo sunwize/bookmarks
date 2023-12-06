@@ -7,7 +7,7 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { BookmarkList } from '@/types/bookmark';
-import { CollectionSelectorContext } from '@/lib/composables/useCollectionSelector';
+import { DialogsContext } from '@/lib/contexts/DialogsContext';
 
 interface Props {
     visible: boolean
@@ -16,7 +16,7 @@ interface Props {
 
 export default function CollectionCreator({ visible, onHide }: Props) {
   const supabase = useSupabase();
-  const { setIsCollectionCreatorVisible } = useContext(CollectionSelectorContext);
+  const { setIsCollectionCreatorVisible } = useContext(DialogsContext);
 
   const [collectionName, setCollectionName] = useState('');
   const [isCreating, setIsCreating] = useState(false);

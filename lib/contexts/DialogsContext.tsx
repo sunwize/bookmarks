@@ -17,7 +17,7 @@ interface ContextProps {
     setBookmark: (bookmark: Omit<Bookmark, 'id'>) => void
 }
 
-export const CollectionSelectorContext = createContext<ContextProps>({
+export const DialogsContext = createContext<ContextProps>({
   isBookmarkExtractorVisible: false,
   setIsBookmarkExtractorVisible: (visible: boolean) => {},
   isCollectionSelectorVisible: false,
@@ -28,7 +28,7 @@ export const CollectionSelectorContext = createContext<ContextProps>({
   setBookmark: (bookmark: Omit<Bookmark, 'id'>) => {},
 });
 
-export function CollectionSelectorContextProvider({ children }: {children: React.ReactNode}) {
+export function DialogsContextProvider({ children }: {children: React.ReactNode}) {
   const [isBookmarkExtractorVisible, _setIsBookmarkExtractorVisible] = useState(false);
   const [isCollectionSelectorVisible, _setIsCollectionSelectorVisible] = useState(false);
   const [isCollectionCreatorVisible, _setIsCollectionCreatorVisible] = useState(false);
@@ -39,20 +39,14 @@ export function CollectionSelectorContextProvider({ children }: {children: React
   const setBookmark = (val: Omit<Bookmark, 'id'>) => _setBookmark(() => val);
   const setIsCollectionSelectorVisible = (val: boolean) => _setIsCollectionSelectorVisible(() => val);
   const setIsBookmarkExtractorVisible = (val: boolean) => _setIsBookmarkExtractorVisible(() => val);
-  const setIsCollectionCreatorVisible = (val: boolean) => {
-    _setIsCollectionCreatorVisible(() => val);
-
-    if (!val) {
-      _setIsCollectionSelectorVisible(() => true);
-    }
-  };
+  const setIsCollectionCreatorVisible = (val: boolean) => _setIsCollectionCreatorVisible(() => val);
 
   useEffect(() => {
     document.body.classList.toggle('overflow-hidden', isDialogOpen);
   }, [isDialogOpen]);
 
   return (
-    <CollectionSelectorContext.Provider
+    <DialogsContext.Provider
       value={{
         isBookmarkExtractorVisible,
         setIsBookmarkExtractorVisible,
@@ -77,6 +71,6 @@ export function CollectionSelectorContextProvider({ children }: {children: React
         onHide={() => setIsCollectionCreatorVisible(false)}
       />
       {children}
-    </CollectionSelectorContext.Provider>
+    </DialogsContext.Provider>
   );
 }

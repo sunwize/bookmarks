@@ -7,9 +7,10 @@ import { BookmarkList } from '@/types/bookmark';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
-import { CollectionSelectorContext } from '@/lib/composables/useCollectionSelector';
+import { DialogsContext } from '@/lib/contexts/DialogsContext';
 import BookmarkItem from '@/components/BookmarkItem';
 import { useRouter } from 'next/navigation';
+import { FiPlus } from 'react-icons/fi';
 
 interface Props {
   visible: boolean
@@ -23,7 +24,7 @@ export default function CollectionSelector({ visible, onHide }: Props) {
     bookmark,
     setIsCollectionSelectorVisible,
     setIsCollectionCreatorVisible,
-  } = useContext(CollectionSelectorContext);
+  } = useContext(DialogsContext);
 
   const [bookmarkLists, setBookmarkLists] = useState<BookmarkList[]>([]);
   const [isAdding, setIsAdding] = useState(false);
@@ -67,7 +68,6 @@ export default function CollectionSelector({ visible, onHide }: Props) {
   };
 
   const openCollectionCreator = () => {
-    setIsCollectionSelectorVisible(false);
     setIsCollectionCreatorVisible(true);
   };
 
@@ -94,8 +94,10 @@ export default function CollectionSelector({ visible, onHide }: Props) {
         <Button
           onClick={openCollectionCreator}
           disabled={isAdding}
+          className="flex items-center gap-1"
         >
-          + New collection
+          <FiPlus />
+          <span>New collection</span>
         </Button>
       </div>
       <div className="border-b-2 border-white/20 -mx-6" />

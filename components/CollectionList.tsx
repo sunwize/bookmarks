@@ -1,14 +1,15 @@
 'use client';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Bookmark, BookmarkList } from '@/types/bookmark';
+import { BookmarkList } from '@/types/bookmark';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { MdOutlineBookmarkAdd } from 'react-icons/md';
 import Button from '@/components/Button';
-import { CollectionSelectorContext } from '@/lib/composables/useCollectionSelector';
+import { DialogsContext } from '@/lib/contexts/DialogsContext';
 import Link from 'next/link';
+import { FiChevronRight } from 'react-icons/fi';
 
 interface Props {
   className?: string
@@ -16,7 +17,7 @@ interface Props {
 
 export default function CollectionList({ className }: Props) {
   const supabase = useSupabase();
-  const { setIsBookmarkExtractorVisible } = useContext(CollectionSelectorContext);
+  const { setIsBookmarkExtractorVisible } = useContext(DialogsContext);
 
   const [bookmarkLists, setBookmarkLists] = useState<BookmarkList[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -61,11 +62,15 @@ export default function CollectionList({ className }: Props) {
               <Link
                 href={`/list/${bookmarkList.id}`}
                 className="
-                  block w-full text-left border-2 border-dashed border-white/20 rounded-xl px-4 py-5 transition
+                  flex justify-between w-full text-left border-2 border-dashed border-white/20 rounded-xl px-4 py-5 transition
                   active:bg-white/10 md:hover:bg-white/10
                 "
               >
                 <span className="text-2xl font-medium tracking-wide">{bookmarkList.title}</span>
+                <FiChevronRight
+                  size={30}
+                  className="opacity-80"
+                />
               </Link>
             </li>
           ))
