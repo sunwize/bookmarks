@@ -71,9 +71,25 @@ export default function CollectionSelector({ visible, onHide }: Props) {
     setIsCollectionCreatorVisible(true);
   };
 
+  const onCollectionAdded = () => {
+    return supabase.channel('public:data')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'bookmark_lists' },
+        (payload) => {
+          const collection = payload.new as BookmarkList;
+          setBookmarkLists((val) => [collection, ...val]);
+        });
+  };
+
+  const listener = onCollectionAdded();
+
   useEffect(() => {
     if (visible) {
       loadBookmarkLists();
+      listener.subscribe();
+    } else {
+      listener.unsubscribe();
     }
   }, [visible]);
 
