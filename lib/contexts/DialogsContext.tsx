@@ -1,45 +1,46 @@
 'use client';
 
 import { createContext, useEffect, useState } from 'react';
+
+import type { Bookmark } from '@/types/bookmark';
 import CollectionSelector from '@/components/CollectionSelector';
-import { Bookmark } from '@/types/bookmark';
-import BookmarkExtractor from '@/components/BookmarkExtractor';
-import CollectionCreator from '@/components/CollectionCreator';
+import CreationDialog from '@/components/CreationDialog';
+
+type CreationOption = 'bookmark' | 'collection';
 
 interface ContextProps {
-    isBookmarkExtractorVisible: boolean
-    setIsBookmarkExtractorVisible: (visible: boolean) => void
+    isCreationDialogVisible: boolean
+    setIsCreationDialogVisible: (visible: boolean) => void
     isCollectionSelectorVisible: boolean
     setIsCollectionSelectorVisible: (visible: boolean) => void
-    isCollectionCreatorVisible: boolean
-    setIsCollectionCreatorVisible: (visible: boolean) => void
     bookmark?: Omit<Bookmark, 'id'>
     setBookmark: (bookmark: Omit<Bookmark, 'id'>) => void
+    setCreationTab: (tab: CreationOption) => void
 }
 
 export const DialogsContext = createContext<ContextProps>({
-  isBookmarkExtractorVisible: false,
-  setIsBookmarkExtractorVisible: (visible: boolean) => {},
+  isCreationDialogVisible: false,
+  setIsCreationDialogVisible: (visible: boolean) => {},
   isCollectionSelectorVisible: false,
   setIsCollectionSelectorVisible: (visible: boolean) => {},
-  isCollectionCreatorVisible: false,
-  setIsCollectionCreatorVisible: (visible: boolean) => {},
   bookmark: undefined,
   setBookmark: (bookmark: Omit<Bookmark, 'id'>) => {},
+  setCreationTab: (tab: CreationOption) => {},
 });
 
 export function DialogsContextProvider({ children }: {children: React.ReactNode}) {
   const [isBookmarkExtractorVisible, _setIsBookmarkExtractorVisible] = useState(false);
   const [isCollectionSelectorVisible, _setIsCollectionSelectorVisible] = useState(false);
-  const [isCollectionCreatorVisible, _setIsCollectionCreatorVisible] = useState(false);
   const [bookmark, _setBookmark] = useState<Omit<Bookmark, 'id'>>();
+  const [creationTab, _setCreationTab] = useState('');
+  const [zIndex, setZIndex] = useState(20);
 
-  const isDialogOpen = isBookmarkExtractorVisible || isCollectionSelectorVisible || isCollectionCreatorVisible;
+  const isDialogOpen = isBookmarkExtractorVisible || isCollectionSelectorVisible;
 
   const setBookmark = (val: Omit<Bookmark, 'id'>) => _setBookmark(() => val);
   const setIsCollectionSelectorVisible = (val: boolean) => _setIsCollectionSelectorVisible(() => val);
   const setIsBookmarkExtractorVisible = (val: boolean) => _setIsBookmarkExtractorVisible(() => val);
-  const setIsCollectionCreatorVisible = (val: boolean) => _setIsCollectionCreatorVisible(() => val);
+  const setCreationTab = (val: string) => _setCreationTab(() => val);
 
   useEffect(() => {
     document.body.classList.toggle('overflow-hidden', isDialogOpen);
@@ -48,27 +49,23 @@ export function DialogsContextProvider({ children }: {children: React.ReactNode}
   return (
     <DialogsContext.Provider
       value={{
-        isBookmarkExtractorVisible,
-        setIsBookmarkExtractorVisible,
+        isCreationDialogVisible: isBookmarkExtractorVisible,
+        setIsCreationDialogVisible: setIsBookmarkExtractorVisible,
         isCollectionSelectorVisible,
         setIsCollectionSelectorVisible,
-        isCollectionCreatorVisible,
-        setIsCollectionCreatorVisible,
         bookmark,
         setBookmark,
+        setCreationTab,
       }}
     >
-      <BookmarkExtractor
-        visible={isBookmarkExtractorVisible}
-        onHide={() => _setIsBookmarkExtractorVisible(false)}
-      />
       <CollectionSelector
         visible={isCollectionSelectorVisible}
         onHide={() => _setIsCollectionSelectorVisible(false)}
       />
-      <CollectionCreator
-        visible={isCollectionCreatorVisible}
-        onHide={() => setIsCollectionCreatorVisible(false)}
+      <CreationDialog
+        visible={isBookmarkExtractorVisible}
+        selectedTab={creationTab}
+        onHide={() => _setIsBookmarkExtractorVisible(false)}
       />
       {children}
     </DialogsContext.Provider>

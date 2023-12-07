@@ -7,7 +7,7 @@ import { DialogsContext } from '@/lib/contexts/DialogsContext';
 export default function Shared() {
   const router = useRouter();
   const params = useSearchParams();
-  const { setIsBookmarkExtractorVisible } = useContext(DialogsContext);
+  const { setIsCreationDialogVisible } = useContext(DialogsContext);
 
   const url = params.get('description');
 
@@ -16,7 +16,7 @@ export default function Shared() {
       return router.replace('/');
     }
 
-    setIsBookmarkExtractorVisible(true);
+    setIsCreationDialogVisible(true);
   }, []);
 
   return (

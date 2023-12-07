@@ -52,6 +52,7 @@
     "switch-colon-spacing": ["error", { "after": true, "before": false }],
     "react/jsx-max-props-per-line": ["error"],
     "react/jsx-first-prop-new-line": ["error"],
-    "react/jsx-closing-bracket-location": ["error"]
+    "react/jsx-closing-bracket-location": ["error"],
+    "react/display-name": ["off"]
   }
 }

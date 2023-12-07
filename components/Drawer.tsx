@@ -26,10 +26,13 @@ export default function Drawer({ visible, onHide, children }: Props) {
   }, [visible]);
 
   return (
-    <dialog ref={dialogElement}>
+    <dialog
+      ref={dialogElement}
+      className="z-20"
+    >
       <div
         onClick={onHide}
-        className="overflow-y-auto scrollbar-hidden fixed z-20 top-0 left-0 flex flex-col w-full h-[100dvh] bg-black/80 cursor-pointer"
+        className="overflow-y-auto scrollbar-hidden fixed top-0 left-0 flex flex-col w-full h-[100dvh] bg-black/80 cursor-pointer"
       >
         <div className="sticky flex justify-end top-0 shrink-0">
           <button className="text-white/50 active:text-white md:hover:text-white outline-0">

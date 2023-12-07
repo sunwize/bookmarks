@@ -17,7 +17,7 @@ interface Props {
 
 export default function CollectionList({ className }: Props) {
   const supabase = useSupabase();
-  const { setIsBookmarkExtractorVisible } = useContext(DialogsContext);
+  const { setIsCreationDialogVisible, setCreationTab } = useContext(DialogsContext);
 
   const [bookmarkLists, setBookmarkLists] = useState<BookmarkList[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +42,7 @@ export default function CollectionList({ className }: Props) {
   };
 
   const onCollectionAdded = () => {
-    return supabase.channel('public:data')
+    return supabase.channel('public:collections')
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'bookmark_lists' },
@@ -81,6 +81,11 @@ export default function CollectionList({ className }: Props) {
     )
   ), [bookmarkLists, className]);
 
+  const openCreationDialog = () => {
+    setCreationTab('collection');
+    setIsCreationDialogVisible(true);
+  };
+
   useEffect(() => {
     loadBookmarkLists();
 
@@ -96,7 +101,7 @@ export default function CollectionList({ className }: Props) {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold">Collections</h2>
         <Button
-          onClick={() => setIsBookmarkExtractorVisible(true)}
+          onClick={openCreationDialog}
           className="text-2xl"
         >
           <MdOutlineBookmarkAdd />

@@ -23,7 +23,8 @@ export default function CollectionSelector({ visible, onHide }: Props) {
   const {
     bookmark,
     setIsCollectionSelectorVisible,
-    setIsCollectionCreatorVisible,
+    setIsCreationDialogVisible,
+    setCreationTab,
   } = useContext(DialogsContext);
 
   const [bookmarkLists, setBookmarkLists] = useState<BookmarkList[]>([]);
@@ -67,12 +68,13 @@ export default function CollectionSelector({ visible, onHide }: Props) {
     }
   };
 
-  const openCollectionCreator = () => {
-    setIsCollectionCreatorVisible(true);
+  const openCreationDialog = () => {
+    setCreationTab('collection');
+    setIsCreationDialogVisible(true);
   };
 
   const onCollectionAdded = () => {
-    return supabase.channel('public:data')
+    return supabase.channel('public:collections-selector')
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'bookmark_lists' },
@@ -108,7 +110,7 @@ export default function CollectionSelector({ visible, onHide }: Props) {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Collections</h1>
         <Button
-          onClick={openCollectionCreator}
+          onClick={openCreationDialog}
           disabled={isAdding}
           className="flex items-center gap-1"
         >
@@ -116,13 +118,13 @@ export default function CollectionSelector({ visible, onHide }: Props) {
           <span>New collection</span>
         </Button>
       </div>
-      <div className="border-b-2 border-white/20 -mx-6" />
+      <div className="border-b-2 border-white/20 -mx-3 md:-mx-6" />
       <ul className="grid grid-cols-1 gap-2">
         {
           bookmarkLists.map((list) => (
             <li
               key={list.id}
-              className="border-b-2 border-white/20 px-6 py-3 -mx-6"
+              className="border-b-2 border-white/20 px-6 py-3 -mx-3 md:-mx-6"
             >
               <div className="flex items-center justify-between">
                 <p className="text-xl md:text-2xl font-bold truncate">{list.title}</p>
