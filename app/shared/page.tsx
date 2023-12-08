@@ -9,9 +9,17 @@ export default function Shared() {
   const params = useSearchParams();
   const { setIsCreationDialogVisible, setCreationTab } = useContext(DialogsContext);
 
-  const url = params.get('description');
+  const getSharedUrl = () => {
+    for (const key of ['title', 'description', 'name', 'text', 'url']) {
+      const param = params.get(key);
+      if (param?.startsWith('http')) {
+        return param;
+      }
+    }
+  };
 
   useEffect(() => {
+    const url = getSharedUrl();
     if (!url) {
       return router.replace('/');
     }
