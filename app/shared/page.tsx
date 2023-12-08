@@ -8,6 +8,7 @@ export default function Shared() {
   const router = useRouter();
   const params = useSearchParams();
   const { setIsCreationDialogVisible, setCreationTab } = useContext(DialogsContext);
+  const debug = false;
 
   const getSharedUrl = () => {
     for (const key of ['title', 'description', 'name', 'text', 'url']) {
@@ -20,17 +21,30 @@ export default function Shared() {
 
   useEffect(() => {
     const url = getSharedUrl();
-    if (!url) {
+    if (!debug && !url) {
       return router.replace('/');
     }
 
-    setCreationTab('bookmark');
-    setIsCreationDialogVisible(true);
+    if (!debug) {
+      setCreationTab('bookmark');
+      setIsCreationDialogVisible(true);
+    }
   }, []);
 
   return (
     <>
       <h1 className="text-center text-xl font-bold">A link has been shared!</h1>
+      {
+        debug && (
+          <ul className="mt-6">
+            {
+              Array.from(params.entries()).map(([key, value]) => (
+                <li key={key}>{key}: {value}</li>
+              ))
+            }
+          </ul>
+        )
+      }
     </>
   );
 }
