@@ -66,10 +66,10 @@ export default function CollectionList({ className }: Props) {
                   active:bg-white/10 md:hover:bg-white/10
                 "
               >
-                <span className="text-2xl font-medium tracking-wide">{bookmarkList.title}</span>
+                <span className="text-2xl font-medium tracking-wide truncate">{bookmarkList.title}</span>
                 <FiChevronRight
                   size={30}
-                  className="opacity-80"
+                  className="opacity-80 shrink-0"
                 />
               </Link>
             </li>

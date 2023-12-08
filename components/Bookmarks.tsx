@@ -121,11 +121,11 @@ export default function Bookmarks({ className }: Props) {
           </div>
         ) : (
           <>
-            <div className="flex items-center justify-between mb-6">
-              <h1 className="text-center text-3xl font-bold">{listTitle}</h1>
+            <div className="flex items-center justify-between gap-2 mb-6">
+              <h1 className="text-center text-3xl font-bold truncate">{listTitle}</h1>
               <Button
                 onClick={openCreationDialog}
-                className="text-2xl"
+                className="text-2xl shrink-0"
               >
                 <MdOutlineBookmarkAdd />
               </Button>
