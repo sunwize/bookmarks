@@ -3,25 +3,17 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useEffect } from 'react';
 import { DialogsContext } from '@/lib/contexts/DialogsContext';
+import { useSharedUrl } from '@/lib/composables/useSharedUrl';
 
 export default function Shared() {
   const router = useRouter();
   const params = useSearchParams();
+  const { url: sharedUrl } = useSharedUrl();
   const { setIsCreationDialogVisible, setCreationTab } = useContext(DialogsContext);
-  const debug = true;
-
-  const getSharedUrl = () => {
-    for (const key of ['title', 'description', 'name', 'text', 'url']) {
-      const param = params.get(key);
-      if (param?.startsWith('http')) {
-        return param;
-      }
-    }
-  };
+  const debug = false;
 
   useEffect(() => {
-    const url = getSharedUrl();
-    if (!debug && !url) {
+    if (!debug && !sharedUrl) {
       return router.replace('/');
     }
 

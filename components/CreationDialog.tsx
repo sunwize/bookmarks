@@ -6,12 +6,12 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import Drawer from '@/components/Drawer';
 import { extractMetaData } from '@/lib/services/jsonlink';
 import { DialogsContext } from '@/lib/contexts/DialogsContext';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { FiPlus } from 'react-icons/fi';
+import { useRouter } from 'next/navigation';
 import Tab from '@/components/Tab';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { BookmarkList } from '@/types/bookmark';
+import { useSharedUrl } from '@/lib/composables/useSharedUrl';
 
 interface Props {
   visible: boolean
@@ -21,7 +21,7 @@ interface Props {
 
 export default function CreationDialog({ visible, selectedTab = 'bookmark', onHide }: Props) {
   const supabase = useSupabase();
-  const params = useSearchParams();
+  const { url: sharedUrl } = useSharedUrl();
   const router = useRouter();
   const { setBookmark, setIsCollectionSelectorVisible, setIsCreationDialogVisible } = useContext(DialogsContext);
 
@@ -78,10 +78,8 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
   };
 
   useEffect(() => {
-    const url = params.get('description');
-
-    if (visible && url) {
-      extractBookmark(url);
+    if (visible && sharedUrl) {
+      extractBookmark(sharedUrl);
       router.push('/');
     }
   }, [visible]);
