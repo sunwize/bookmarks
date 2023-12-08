@@ -8,7 +8,7 @@ export default function Shared() {
   const router = useRouter();
   const params = useSearchParams();
   const { setIsCreationDialogVisible, setCreationTab } = useContext(DialogsContext);
-  const debug = false;
+  const debug = true;
 
   const getSharedUrl = () => {
     for (const key of ['title', 'description', 'name', 'text', 'url']) {
