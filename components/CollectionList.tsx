@@ -60,7 +60,7 @@ export default function CollectionList({ className }: Props) {
           bookmarkLists.map((bookmarkList, index) => (
             <li key={index}>
               <Link
-                href={`/list/${bookmarkList.id}`}
+                href={`/collection/${bookmarkList.id}`}
                 className="
                   flex justify-between w-full text-left border-2 border-dashed border-white/20 rounded-xl px-4 py-5 transition
                   active:bg-white/10 md:hover:bg-white/10

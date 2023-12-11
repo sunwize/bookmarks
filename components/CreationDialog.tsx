@@ -6,11 +6,11 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import Drawer from '@/components/Drawer';
 import { extractMetaData } from '@/lib/services/jsonlink';
 import { DialogsContext } from '@/lib/contexts/DialogsContext';
-import { useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import Tab from '@/components/Tab';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import { BookmarkList } from '@/types/bookmark';
+import { Bookmark, BookmarkList } from '@/types/bookmark';
 import { useSharedUrl } from '@/lib/composables/useSharedUrl';
 
 interface Props {
@@ -22,6 +22,8 @@ interface Props {
 export default function CreationDialog({ visible, selectedTab = 'bookmark', onHide }: Props) {
   const supabase = useSupabase();
   const { url: sharedUrl } = useSharedUrl();
+  const { id } = useParams<{ id: string }>();
+  const pathname = usePathname();
   const router = useRouter();
   const { setBookmark, setIsCollectionSelectorVisible, setIsCreationDialogVisible } = useContext(DialogsContext);
 
@@ -35,15 +37,34 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
   const [collectionName, setCollectionName] = useState('');
   const [isCreatingCollection, setIsCreatingCollection] = useState(false);
 
+  const saveBookmarkToCollection = async (bookmark: Omit<Bookmark, 'id'>) => {
+    await supabase.from('bookmarks')
+      .insert({
+        list_id: id,
+        title: bookmark.title,
+        description: bookmark.description,
+        url: bookmark.url,
+        image_url: bookmark.image_url,
+        sitename: bookmark.sitename,
+        domain: bookmark.domain,
+      });
+  };
+
   const extractBookmark = async (url: string) => {
     try {
       setIsExtractingBookmark(true);
       const bookmark = await extractMetaData(url);
       setBookmark(bookmark);
+
       onHide?.();
       setIsCreationDialogVisible(false);
-      setIsCollectionSelectorVisible(true);
       setBookmarkUrl('');
+
+      if (!sharedUrl && pathname.startsWith('/collection/')) {
+        await saveBookmarkToCollection(bookmark);
+      } else {
+        setIsCollectionSelectorVisible(true);
+      }
     } finally {
       setIsExtractingBookmark(false);
     }
@@ -70,7 +91,7 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
       }
 
       setIsCreationDialogVisible(false);
-      router.push(`/list/${collection.id}`);
+      router.push(`/collection/${collection.id}`);
       setCollectionName('');
     } finally {
       setIsCreatingCollection(false);

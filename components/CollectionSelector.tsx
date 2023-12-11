@@ -64,7 +64,7 @@ export default function CollectionSelector({ visible, onHide }: Props) {
     } finally {
       setIsAdding(false);
       setIsCollectionSelectorVisible(false);
-      router.push(`/list/${listId}`);
+      router.push(`/collection/${listId}`);
     }
   };
 
