@@ -12,6 +12,7 @@ export const GET = async (request: NextRequest) => {
   }
 
   const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
     executablePath: process.env.NODE_ENV === 'production'
       ? await chromium.executablePath('https://github.com/Sparticuz/chromium/releases/download/v116.0.0/chromium-v116.0.0-pack.tar')
       : undefined,
