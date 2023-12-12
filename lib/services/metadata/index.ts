@@ -8,7 +8,6 @@ export const extractMetadata = async (url: string): Promise<Omit<Bookmark, 'id'>
   let urlObject = new URL(url);
 
   if (urlObject.hostname in MetadataExtractors) {
-    console.log('Using custom extractor!');
     const extractor = MetadataExtractors[urlObject.hostname];
     return extractor(url);
   }
