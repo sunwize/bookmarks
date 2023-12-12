@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import puppeteer from 'puppeteer';
+import chromium from '@sparticuz/chromium-min';
 
 export const GET = async (request: NextRequest) => {
   const url = request.nextUrl.searchParams.get('url');
@@ -10,7 +11,13 @@ export const GET = async (request: NextRequest) => {
     });
   }
 
-  const browser = await puppeteer.launch({ headless: 'new', ignoreHTTPSErrors: true });
+  const browser = await puppeteer.launch({
+    executablePath: process.env.NODE_ENV === 'production'
+      ? await chromium.executablePath('https://github.com/Sparticuz/chromium/releases/download/v116.0.0/chromium-v116.0.0-pack.tar')
+      : undefined,
+    headless: 'new',
+    ignoreHTTPSErrors: true,
+  });
   const page = await browser.newPage();
 
   await page.goto(url);
