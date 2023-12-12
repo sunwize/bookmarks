@@ -18,7 +18,7 @@ const api = axios.create({
   },
 });
 
-export const extractMetaData = async (url: string): Promise<Omit<Bookmark, 'id'>> => {
+export const loadMetadata = async (url: string): Promise<Omit<Bookmark, 'id'>> => {
   const { data } = await api.get<ApiResponse>('/api/extract', {
     params: {
       url,

@@ -4,7 +4,7 @@ import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import Button from '@/components/Button';
 import { AiOutlineLoading } from 'react-icons/ai';
 import Drawer from '@/components/Drawer';
-import { extractMetaData } from '@/lib/services/jsonlink';
+import { extractMetadata } from '@/lib/utils/metadata';
 import { DialogsContext } from '@/lib/contexts/DialogsContext';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import Tab from '@/components/Tab';
@@ -53,7 +53,7 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
   const extractBookmark = async (url: string) => {
     try {
       setIsExtractingBookmark(true);
-      const bookmark = await extractMetaData(url);
+      const bookmark = await extractMetadata(url);
       setBookmark(bookmark);
 
       onHide?.();

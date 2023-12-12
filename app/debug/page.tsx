@@ -3,7 +3,7 @@
 import { Bookmark } from '@/types/bookmark';
 import BookmarkItem from '@/components/BookmarkItem';
 import { useEffect, useState } from 'react';
-import { extractMetaData } from '@/lib/services/jsonlink';
+import { extractMetadata } from '@/lib/utils/metadata';
 
 const links = [
   'https://a.co/d/7sIw6O8',
@@ -20,7 +20,7 @@ export default function Debug() {
   const [bookmarks, setBookmarks] = useState<Omit<Bookmark, 'id'>[]>([]);
 
   const loadBookmarks = async () => {
-    const metadata = await Promise.all(links.map((link) => extractMetaData(link)));
+    const metadata = await Promise.all(links.map((link) => extractMetadata(link)));
     setBookmarks(metadata);
   };
 

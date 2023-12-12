@@ -10,7 +10,7 @@ import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { MdOutlineBookmarkAdd } from 'react-icons/md';
 import { DialogsContext } from '@/lib/contexts/DialogsContext';
-import { extractMetaData } from '@/lib/services/jsonlink';
+import { extractMetadata } from '@/lib/utils/metadata';
 
 interface Props {
     className?: string
@@ -71,7 +71,7 @@ export default function Bookmarks({ className }: Props) {
 
   const onLoadImageError = async (index: number) => {
     const bookmark = bookmarks[index];
-    const { image_url: imageUrl } = await extractMetaData(bookmark.url);
+    const { image_url: imageUrl } = await extractMetadata(bookmark.url);
 
     await supabase.from('bookmarks')
       .update({
