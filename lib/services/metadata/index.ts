@@ -4,11 +4,17 @@ import { extractDescription, extractFavicon, extractImage, extractSitename, extr
 import { MetadataExtractors } from '@/lib/services/metadata/extractors';
 import { Bookmark } from '@/types/bookmark';
 
+const getPrimaryDomainName = (domain: string) => {
+  const tab = domain.split('.');
+  return tab.slice(tab.length - 2, tab.length).join('.');
+};
+
 export const extractMetadata = async (url: string): Promise<Omit<Bookmark, 'id'>> => {
   let urlObject = new URL(url);
+  const domainName = getPrimaryDomainName(urlObject.hostname);
 
-  if (urlObject.hostname in MetadataExtractors) {
-    const extractor = MetadataExtractors[urlObject.hostname];
+  if (domainName in MetadataExtractors) {
+    const extractor = MetadataExtractors[domainName];
     return extractor(url);
   }
 
