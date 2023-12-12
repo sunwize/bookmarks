@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium-min';
 
 export const GET = async (request: NextRequest) => {
   const url = request.nextUrl.searchParams.get('url');
@@ -10,8 +11,11 @@ export const GET = async (request: NextRequest) => {
     });
   }
 
-  const browser = await puppeteer.connect({
-    browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BLESS_API_KEY}`,
+  const browser = await puppeteer.launch({
+    args: [...chromium.args, '--hide-scrollbars', '--disable-web-security', '--no-sandbox', '--disable-setuid-sandbox'],
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath('https://github.com/Sparticuz/chromium/releases/download/v116.0.0/chromium-v116.0.0-pack.tar'),
+    headless: chromium.headless,
     ignoreHTTPSErrors: true,
   });
   const page = await browser.newPage();
