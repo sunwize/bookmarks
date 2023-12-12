@@ -10,14 +10,6 @@ const getPrimaryDomainName = (domain: string) => {
 };
 
 export const extractMetadata = async (url: string): Promise<Omit<Bookmark, 'id'>> => {
-  let urlObject = new URL(url);
-  const domainName = getPrimaryDomainName(urlObject.hostname);
-
-  if (domainName in MetadataExtractors) {
-    const extractor = MetadataExtractors[domainName];
-    return extractor(url);
-  }
-
   const response = await axios.get<string>(url, {
     headers: {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -28,7 +20,13 @@ export const extractMetadata = async (url: string): Promise<Omit<Bookmark, 'id'>
   // Using the response url in case of redirects
   // For instance Amazon will redirect from https://a.co/... to https://www.amazon.ca/...
   const responseUrl = response.request.res.responseUrl as string;
-  urlObject = new URL(responseUrl);
+  const urlObject = new URL(responseUrl);
+  const domainName = getPrimaryDomainName(urlObject.hostname);
+
+  if (domainName in MetadataExtractors) {
+    const extractor = MetadataExtractors[domainName];
+    return extractor(responseUrl);
+  }
 
   const { window } = new JSDOM(response.data);
   const document = window.document;
