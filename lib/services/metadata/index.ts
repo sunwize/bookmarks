@@ -31,7 +31,7 @@ export const extractMetadata = async (url: string): Promise<Omit<Bookmark, 'id'>
   const { window } = new JSDOM(response.data);
   const document = window.document;
 
-  return {
+  const d = {
     title: extractTitle(document)!,
     description: extractDescription(document)!,
     image_url: extractImage(document) || extractFavicon(document, responseUrl),
@@ -39,4 +39,6 @@ export const extractMetadata = async (url: string): Promise<Omit<Bookmark, 'id'>
     domain: urlObject.hostname,
     url,
   };
+
+  return d;
 };

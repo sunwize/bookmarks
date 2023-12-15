@@ -14,6 +14,7 @@ const links = [
   'https://typehero.dev/',
   'https://www.ricardocuisine.com/recettes/3765-crepes-de-base',
   'https://www.tiktok.com/@nicoleebennett/video/7220871479259303210',
+  'https://open.spotify.com/intl-fr/album/1TNCpCq8peDn03K1qK5If4?si=XRNh0Y2PQZqxzxQWmU8xKA',
 ];
 
 export default function Debug() {
