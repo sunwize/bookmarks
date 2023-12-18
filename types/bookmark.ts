@@ -8,7 +8,7 @@ export interface Bookmark {
     domain: string
 }
 
-export interface BookmarkList {
+export interface BookmarkCollection {
     id: string
     title: string
 }

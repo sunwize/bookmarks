@@ -3,7 +3,7 @@
 import Button from '@/components/Button';
 import Drawer from '@/components/Drawer';
 import { useContext, useEffect, useState } from 'react';
-import { BookmarkList } from '@/types/bookmark';
+import { BookmarkCollection } from '@/types/bookmark';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
@@ -27,11 +27,11 @@ export default function CollectionSelector({ visible, onHide }: Props) {
     setCreationTab,
   } = useContext(DialogsContext);
 
-  const [bookmarkLists, setBookmarkLists] = useState<BookmarkList[]>([]);
+  const [bookmarkLists, setBookmarkLists] = useState<BookmarkCollection[]>([]);
   const [isAdding, setIsAdding] = useState(false);
 
   const loadBookmarkLists = async () => {
-    const { data }: PostgrestSingleResponse<BookmarkList[]> = await supabase
+    const { data }: PostgrestSingleResponse<BookmarkCollection[]> = await supabase
       .from('bookmark_lists')
       .select()
       .order('created_at', { ascending: false });
@@ -43,7 +43,7 @@ export default function CollectionSelector({ visible, onHide }: Props) {
     setBookmarkLists(data);
   };
 
-  const saveBookmark = async (listId: string) => {
+  const saveBookmark = async (collectionId: string) => {
     try {
       if (!bookmark) {
         return;
@@ -53,7 +53,7 @@ export default function CollectionSelector({ visible, onHide }: Props) {
 
       await supabase.from('bookmarks')
         .insert({
-          list_id: listId,
+          list_id: collectionId,
           title: bookmark.title,
           description: bookmark.description,
           url: bookmark.url,
@@ -64,7 +64,7 @@ export default function CollectionSelector({ visible, onHide }: Props) {
     } finally {
       setIsAdding(false);
       setIsCollectionSelectorVisible(false);
-      router.push(`/collection/${listId}`);
+      router.push(`/collection/${collectionId}`);
     }
   };
 
@@ -79,7 +79,7 @@ export default function CollectionSelector({ visible, onHide }: Props) {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'bookmark_lists' },
         (payload) => {
-          const collection = payload.new as BookmarkList;
+          const collection = payload.new as BookmarkCollection;
           setBookmarkLists((val) => [collection, ...val]);
         });
   };

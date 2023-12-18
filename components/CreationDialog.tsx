@@ -10,7 +10,7 @@ import { useParams, usePathname, useRouter } from 'next/navigation';
 import Tab from '@/components/Tab';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import { Bookmark, BookmarkList } from '@/types/bookmark';
+import { Bookmark, BookmarkCollection } from '@/types/bookmark';
 import { useSharedUrl } from '@/lib/composables/useSharedUrl';
 
 interface Props {
@@ -77,7 +77,7 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
 
     try {
       setIsCreatingCollection(true);
-      const { data: collection, error }: PostgrestSingleResponse<BookmarkList> = await supabase
+      const { data: collection, error }: PostgrestSingleResponse<BookmarkCollection> = await supabase
         .from('bookmark_lists')
         .insert({
           title: collectionName,
@@ -132,7 +132,7 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
           </Tab.Item>
         </div>
 
-        <hr className="border-white/20 my-3 -mx-3 md:-mx-6" />
+        <hr className="border-white/20 my-3 md:my-6 -mx-3 md:-mx-6" />
 
         <Tab.Content
           value="bookmark"

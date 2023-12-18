@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { BookmarkList } from '@/types/bookmark';
+import { BookmarkCollection } from '@/types/bookmark';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
@@ -19,13 +19,13 @@ export default function CollectionList({ className }: Props) {
   const supabase = useSupabase();
   const { setIsCreationDialogVisible, setCreationTab } = useContext(DialogsContext);
 
-  const [bookmarkLists, setBookmarkLists] = useState<BookmarkList[]>([]);
+  const [bookmarkLists, setBookmarkLists] = useState<BookmarkCollection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const loadBookmarkLists = async () => {
     try {
       setIsLoading(true);
-      const { data, error }: PostgrestSingleResponse<BookmarkList[]> = await supabase
+      const { data, error }: PostgrestSingleResponse<BookmarkCollection[]> = await supabase
         .from('bookmark_lists')
         .select()
         .order('created_at', { ascending: false });
@@ -47,7 +47,7 @@ export default function CollectionList({ className }: Props) {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'bookmark_lists' },
         (payload) => {
-          const collection = payload.new as BookmarkList;
+          const collection = payload.new as BookmarkCollection;
           setBookmarkLists((val) => [collection, ...val]);
         })
       .subscribe();
