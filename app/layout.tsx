@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import { DialogsContextProvider } from '@/lib/contexts/DialogsContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -179,6 +181,18 @@ export default function RootLayout({
           <DialogsContextProvider>
             {children}
           </DialogsContextProvider>
+          <ToastContainer
+            position="bottom-center"
+            autoClose={3000}
+            hideProgressBar={true}
+            newestOnTop={false}
+            closeOnClick={true}
+            rtl={false}
+            pauseOnFocusLoss={true}
+            draggable={false}
+            pauseOnHover={false}
+            theme="dark"
+          />
         </main>
       </body>
     </html>

@@ -9,6 +9,7 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import Button from '@/components/Button';
 import { FiMinusCircle, FiSave } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 interface Props {
     visible: boolean
@@ -25,6 +26,8 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isUpdatingCollectionName, setIsUpdatingCollectionName] = useState(false);
+  const [bookmarkToRemove, setBookmarkToRemove] = useState<Bookmark|null>(null);
+  const [isRemovingCollection, setIsRemovingCollection] = useState(false);
 
   const loadCollection = async () => {
     try {
@@ -76,20 +79,36 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
   };
 
   const removeBookmark = async (bookmark: Bookmark) => {
-    setBookmarks((val) => val.filter((b) => b.id !== bookmark.id));
-    await supabase.from('bookmarks')
-      .delete()
-      .eq('id', bookmark.id);
+    try {
+      setBookmarkToRemove(() => bookmark);
+      await supabase.from('bookmarks')
+        .delete()
+        .eq('id', bookmark.id);
+      setBookmarks((val) => val.filter((b) => b.id !== bookmark.id));
+      toast('Bookmark deleted', { type: 'success' });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setBookmarkToRemove(() => null);
+    }
   };
 
   const removeCollection = async () => {
     const confirm = window.confirm(`Are you sure you want to delete "${collectionTitle}"?`);
 
     if (confirm) {
-      await supabase.from('bookmark_lists')
-        .delete()
-        .eq('id', collectionId);
-      router.replace('/');
+      try {
+        setIsRemovingCollection(() => true);
+        await supabase.from('bookmark_lists')
+          .delete()
+          .eq('id', collectionId);
+        router.replace('/');
+        toast('Collection deleted', { type: 'success' });
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsRemovingCollection(() => false);
+      }
     }
   };
 
@@ -104,6 +123,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
             <div className="flex items-center gap-2 md:gap-3 flex-1 truncate">
               <img
                 src={bookmark.image_url}
+                alt={bookmark.title}
                 className="w-[50px] md:w-[70px] aspect-square object-cover rounded-lg shrink-0"
               />
               <div className="truncate">
@@ -113,9 +133,16 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
             </div>
             <button
               onClick={() => removeBookmark(bookmark)}
-              className="opacity-50 active:opacity-100 md:hover:opacity-100 text-3xl shrink-0"
+              disabled={!!bookmarkToRemove}
+              className="opacity-50 active:opacity-100 md:hover:opacity-100 text-3xl shrink-0 disabled:pointer-events-none"
             >
-              <FiMinusCircle />
+              {
+                bookmarkToRemove?.id === bookmark.id ? (
+                  <AiOutlineLoading className="animate-spin" />
+                ) : (
+                  <FiMinusCircle />
+                )
+              }
             </button>
           </li>
         ))
@@ -176,9 +203,15 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
             <footer className="sticky bottom-0 bg-slate-950 border-t border-white/40 p-3 md:p-6 -mx-3 md:-mx-6">
               <Button
                 onClick={removeCollection}
-                className="block w-full !bg-red-500 text-white"
+                disabled={isRemovingCollection}
+                className="w-full !bg-red-500 text-white flex items-center justify-center gap-1"
               >
-                Delete this collection
+                {
+                  isRemovingCollection && (
+                    <AiOutlineLoading className="animate-spin" />
+                  )
+                }
+                <span>Delete this collection</span>
               </Button>
             </footer>
           </div>
