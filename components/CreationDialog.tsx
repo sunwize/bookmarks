@@ -1,17 +1,19 @@
 'use client';
 
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
-import Button from '@/components/Button';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { AiOutlineLoading } from 'react-icons/ai';
-import Drawer from '@/components/Drawer';
+import { toast } from 'react-toastify';
+import { PostgrestSingleResponse } from '@supabase/supabase-js';
+
+import { Bookmark, BookmarkCollection } from '@/types/bookmark';
 import { extractMetadata } from '@/lib/utils/metadata';
 import { DialogsContext } from '@/lib/contexts/DialogsContext';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import Tab from '@/components/Tab';
 import { useSupabase } from '@/lib/composables/useSupabase';
-import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import { Bookmark, BookmarkCollection } from '@/types/bookmark';
 import { useSharedUrl } from '@/lib/composables/useSharedUrl';
+import Button from '@/components/Button';
+import Drawer from '@/components/Drawer';
+import Tab from '@/components/Tab';
 
 interface Props {
   visible: boolean
@@ -48,6 +50,7 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
         sitename: bookmark.sitename,
         domain: bookmark.domain,
       });
+    toast('Bookmark saved', { type: 'success' });
   };
 
   const extractBookmark = async (url: string) => {

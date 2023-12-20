@@ -1,15 +1,15 @@
 'use client';
 
 import Drawer from '@/components/Drawer';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useSupabase } from '@/lib/composables/useSupabase';
-import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import { Bookmark, BookmarkCollection } from '@/types/bookmark';
+import { Bookmark } from '@/types/bookmark';
 import { AiOutlineLoading } from 'react-icons/ai';
 import Button from '@/components/Button';
 import { FiMinusCircle, FiSave } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { useBookmarks } from '@/lib/composables/useBookmarks';
 
 interface Props {
     visible: boolean
@@ -21,41 +21,25 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
   const supabase = useSupabase();
   const router = useRouter();
 
-  const [collectionTitle, setCollectionTitle] = useState('');
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
   const [isUpdatingCollectionName, setIsUpdatingCollectionName] = useState(false);
   const [bookmarkToRemove, setBookmarkToRemove] = useState<Bookmark|null>(null);
   const [isRemovingCollection, setIsRemovingCollection] = useState(false);
 
-  const loadCollection = async () => {
-    try {
-      setIsLoading(true);
+  const {
+    collection,
+    setCollection,
+    bookmarks,
+    setBookmarks,
+    isLoading,
+  } = useBookmarks(collectionId, { fetchCondition: visible });
 
-      const { data: collection }: PostgrestSingleResponse<BookmarkCollection> = await supabase
-        .from('bookmark_lists')
-        .select()
-        .eq('id', collectionId)
-        .single();
-
-      const { data: bookmarks }: PostgrestSingleResponse<Bookmark[]> = await supabase
-        .from('bookmarks')
-        .select()
-        .order('created_at', { ascending: false })
-        .eq('list_id', collectionId);
-
-      if (!collection || !bookmarks) {
-        setIsError(true);
-        return;
-      }
-
-      setCollectionTitle(collection.title);
-      setBookmarks(bookmarks);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
+  const collectionTitle = useMemo(() => collection?.title, [collection]);
+  const setCollectionTitle = (title: string) => {
+    if (collection) {
+      setCollection({
+        ...collection,
+        title,
+      });
     }
   };
 
@@ -149,12 +133,6 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
       }
     </ul>
   ), [bookmarks]);
-
-  useEffect(() => {
-    if (visible) {
-      loadCollection();
-    }
-  }, [visible]);
 
   return (
     <Drawer

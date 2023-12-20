@@ -1,18 +1,19 @@
 'use client';
 
-import { useParams } from 'next/navigation';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Bookmark, BookmarkCollection } from '@/types/bookmark';
-import Button from '@/components/Button';
-import BookmarkItem from '@/components/BookmarkItem';
+import { useParams } from 'next/navigation';
 import { AiOutlineLoading } from 'react-icons/ai';
-import { PostgrestSingleResponse } from '@supabase/supabase-js';
+import { FiEdit3, FiPlus } from 'react-icons/fi';
+import { MdOutlineBookmarkAdd } from 'react-icons/md';
+
+import { Bookmark } from '@/types/bookmark';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { extractMetadata } from '@/lib/utils/metadata';
-import { FiEdit3, FiPlus } from 'react-icons/fi';
-import CollectionEditor from '@/components/CollectionEditor';
-import { MdOutlineBookmarkAdd } from 'react-icons/md';
 import { DialogsContext } from '@/lib/contexts/DialogsContext';
+import { useBookmarks } from '@/lib/composables/useBookmarks';
+import Button from '@/components/Button';
+import BookmarkItem from '@/components/BookmarkItem';
+import CollectionEditor from '@/components/CollectionEditor';
 
 interface Props {
     className?: string
@@ -23,50 +24,32 @@ export default function Bookmarks({ className }: Props) {
   const supabase = useSupabase();
   const { setIsCreationDialogVisible, setCreationTab } = useContext(DialogsContext);
 
-  const [listTitle, setListTitle] = useState('');
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
   const [isEditorVisible, setIsEditorVisible] = useState(false);
 
-  const loadBookmarks = async () => {
-    try {
-      setIsLoading(true);
+  const {
+    collection,
+    bookmarks,
+    setBookmarks,
+    isLoading,
+    isError,
+    loadBookmarks,
+  } = useBookmarks(collectionId);
 
-      const { data: collection }: PostgrestSingleResponse<BookmarkCollection> = await supabase
-        .from('bookmark_lists')
-        .select()
-        .eq('id', collectionId)
-        .single();
-
-      const { data: bookmarks }: PostgrestSingleResponse<Bookmark[]> = await supabase
-        .from('bookmarks')
-        .select()
-        .order('created_at', { ascending: false })
-        .eq('list_id', collectionId);
-
-      if (!collection || !bookmarks) {
-        setIsError(true);
-        return;
-      }
-
-      setListTitle(collection.title);
-      setBookmarks(bookmarks);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const onBookmarkAdded = () => {
+  const onBookmarkAction = () => {
     return supabase.channel('public:bookmarks')
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'bookmarks', filter: `list_id=eq.${collectionId}` },
+        { event: '*', schema: 'public', table: 'bookmarks', filter: `list_id=eq.${collectionId}` },
         (payload) => {
-          const bookmark = payload.new as Bookmark & { list_id: string };
+          if (payload.eventType === 'INSERT') {
+            const bookmark = payload.new as Bookmark & { list_id: string };
 
-          if (collectionId === bookmark.list_id) {
-            setBookmarks((val) => [bookmark, ...val]);
+            if (collectionId === bookmark.list_id) {
+              setBookmarks((val) => [bookmark, ...val]);
+            }
+          } else if (payload.eventType === 'DELETE') {
+            const bookmarkId = payload.old.id as string;
+            setBookmarks((val) => val.filter((b) => b.id !== bookmarkId));
           }
         })
       .subscribe();
@@ -126,9 +109,7 @@ export default function Bookmarks({ className }: Props) {
   ), [bookmarks, className]);
 
   useEffect(() => {
-    loadBookmarks();
-
-    const listener = onBookmarkAdded();
+    const listener = onBookmarkAction();
 
     return () => {
       listener.unsubscribe();
@@ -154,7 +135,7 @@ export default function Bookmarks({ className }: Props) {
         ) : (
           <>
             <div className="flex items-center justify-between gap-2 mb-6">
-              <h1 className="text-center text-3xl font-bold truncate">{listTitle}</h1>
+              <h1 className="text-center text-3xl font-bold truncate">{collection?.title}</h1>
               <Button
                 onClick={() => setIsEditorVisible(true)}
                 className="text-2xl shrink-0 !bg-transparent text-white/50 active:text-white md:hover:text-white"
