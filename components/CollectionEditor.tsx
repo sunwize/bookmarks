@@ -140,62 +140,64 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
       onHide={onHide}
       fullscreen={true}
     >
-      {
-        isLoading ? (
-          <div className="flex justify-center mt-12">
-            <AiOutlineLoading
-              size={60}
-              className="animate-spin opacity-50"
-            />
-          </div>
-        ) : (
-          <div>
-            <div className="flex items-center justify-between">
-              <input
-                value={collectionTitle}
-                onChange={(event: ChangeEvent<HTMLInputElement>) => setCollectionTitle(event.target.value)}
-                placeholder="Collection name"
-                className="block w-full bg-white/10 border-2 border-white/50 rounded-r-none border-r-0 rounded-xl outline-0 px-3 py-2 focus:border-white"
+      <div className="pt-6 px-3 md:px-6">
+        {
+          isLoading ? (
+            <div className="flex justify-center mt-12">
+              <AiOutlineLoading
+                size={60}
+                className="animate-spin opacity-50"
               />
-              <Button
-                onClick={updateCollectionName}
-                className="text-2xl shrink-0 rounded-l-none"
-                disabled={isUpdatingCollectionName || !collectionTitle}
-              >
-                {
-                  isUpdatingCollectionName ? (
-                    <AiOutlineLoading className="animate-spin" />
-                  ) : (
-                    <FiSave />
-                  )
-                }
-              </Button>
             </div>
-            <hr className="border-white/40 my-3 md:my-6 -mx-3 md:-mx-6" />
-            {
-              bookmarks.length > 0 ? (
-                <ListView />
-              ) : (
-                <p className="text-center opacity-80 pb-3 md:pb-6">No bookmarks here.</p>
-              )
-            }
-            <footer className="sticky bottom-0 bg-slate-950 border-t border-white/40 p-3 md:p-6 -mx-3 md:-mx-6">
-              <Button
-                onClick={removeCollection}
-                disabled={isRemovingCollection}
-                className="w-full !bg-red-500 text-white flex items-center justify-center gap-1"
-              >
-                {
-                  isRemovingCollection && (
-                    <AiOutlineLoading className="animate-spin" />
-                  )
-                }
-                <span>Delete this collection</span>
-              </Button>
-            </footer>
-          </div>
-        )
-      }
+          ) : (
+            <div>
+              <div className="flex items-center justify-between">
+                <input
+                  value={collectionTitle}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => setCollectionTitle(event.target.value)}
+                  placeholder="Collection name"
+                  className="block w-full bg-white/10 border-2 border-white/50 rounded-r-none border-r-0 rounded-xl outline-0 px-3 py-2 focus:border-white"
+                />
+                <Button
+                  onClick={updateCollectionName}
+                  className="text-2xl shrink-0 rounded-l-none"
+                  disabled={isUpdatingCollectionName || !collectionTitle}
+                >
+                  {
+                    isUpdatingCollectionName ? (
+                      <AiOutlineLoading className="animate-spin" />
+                    ) : (
+                      <FiSave />
+                    )
+                  }
+                </Button>
+              </div>
+              <hr className="border-white/40 my-3 md:my-6 -mx-3 md:-mx-6" />
+              {
+                bookmarks.length > 0 ? (
+                  <ListView />
+                ) : (
+                  <p className="text-center opacity-80 pb-3 md:pb-6">No bookmarks here.</p>
+                )
+              }
+              <footer className="sticky bottom-0 bg-slate-950 border-t border-white/40 p-3 md:p-6 -mx-3 md:-mx-6">
+                <Button
+                  onClick={removeCollection}
+                  disabled={isRemovingCollection}
+                  className="w-full !bg-red-500 text-white flex items-center justify-center gap-1"
+                >
+                  {
+                    isRemovingCollection && (
+                      <AiOutlineLoading className="animate-spin" />
+                    )
+                  }
+                  <span>Delete this collection</span>
+                </Button>
+              </footer>
+            </div>
+          )
+        }
+      </div>
     </Drawer>
   );
 }

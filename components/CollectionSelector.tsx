@@ -99,47 +99,50 @@ export default function CollectionSelector({ visible, onHide }: Props) {
     <Drawer
       visible={visible}
       onHide={onHide}
+      fullscreen={true}
     >
-      {
-        bookmark && (
-          <div className="mb-6">
-            <BookmarkItem bookmark={bookmark} />
-          </div>
-        )
-      }
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Collections</h1>
-        <Button
-          onClick={openCreationDialog}
-          disabled={isAdding}
-          className="flex items-center gap-1"
-        >
-          <FiPlus />
-          <span>New collection</span>
-        </Button>
-      </div>
-      <div className="border-b-2 border-white/20 -mx-3 md:-mx-6" />
-      <ul className="grid grid-cols-1 gap-2">
+      <div className="pt-6 px-3 md:px-6">
         {
-          bookmarkLists.map((list) => (
-            <li
-              key={list.id}
-              className="border-b-2 border-white/20 px-6 py-3 -mx-3 md:-mx-6"
-            >
-              <div className="flex items-center justify-between">
-                <p className="text-xl md:text-2xl font-bold truncate">{list.title}</p>
-                <button
-                  onClick={() => saveBookmark(list.id)}
-                  disabled={isAdding}
-                  className="text-white/60 active:text-white md:hover:text-white"
-                >
-                  <AiOutlinePlusCircle size={40} />
-                </button>
-              </div>
-            </li>
-          ))
+          bookmark && (
+            <div className="mb-6">
+              <BookmarkItem bookmark={bookmark} />
+            </div>
+          )
         }
-      </ul>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold">Collections</h1>
+          <Button
+            onClick={openCreationDialog}
+            disabled={isAdding}
+            className="flex items-center gap-1"
+          >
+            <FiPlus />
+            <span>New collection</span>
+          </Button>
+        </div>
+        <div className="border-b-2 border-white/20 -mx-3 md:-mx-6" />
+        <ul className="grid grid-cols-1 gap-2">
+          {
+            bookmarkLists.map((list) => (
+              <li
+                key={list.id}
+                className="border-b-2 border-white/20 px-6 py-3 -mx-3 md:-mx-6"
+              >
+                <div className="flex items-center justify-between">
+                  <p className="text-xl md:text-2xl font-bold truncate">{list.title}</p>
+                  <button
+                    onClick={() => saveBookmark(list.id)}
+                    disabled={isAdding}
+                    className="text-white/60 active:text-white md:hover:text-white"
+                  >
+                    <AiOutlinePlusCircle size={40} />
+                  </button>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </Drawer>
   );
 }

@@ -117,7 +117,7 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
       visible={visible}
       onHide={onHide}
     >
-      <Tab className="mb-6">
+      <Tab className="pt-6 px-3 md:px-6 mb-6">
         <div className="flex items-center gap-2">
           <Tab.Item
             value="bookmark"
