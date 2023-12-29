@@ -1,6 +1,5 @@
 'use client';
 
-import Drawer from '@/components/Drawer';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { Bookmark } from '@/types/bookmark';
@@ -10,6 +9,7 @@ import { FiMinusCircle, FiSave } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { useBookmarks } from '@/lib/composables/useBookmarks';
+import Drawer from '@/components/Drawer';
 
 interface Props {
     visible: boolean
@@ -132,12 +132,13 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
         ))
       }
     </ul>
-  ), [bookmarks]);
+  ), [bookmarks, bookmarkToRemove, removeBookmark]);
 
   return (
     <Drawer
       visible={visible}
       onHide={onHide}
+      fullscreen={true}
     >
       {
         isLoading ? (

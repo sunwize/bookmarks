@@ -33,7 +33,6 @@ export function DialogsContextProvider({ children }: {children: React.ReactNode}
   const [isCollectionSelectorVisible, _setIsCollectionSelectorVisible] = useState(false);
   const [bookmark, _setBookmark] = useState<Omit<Bookmark, 'id'>>();
   const [creationTab, _setCreationTab] = useState('');
-  const [zIndex, setZIndex] = useState(20);
 
   const isDialogOpen = isBookmarkExtractorVisible || isCollectionSelectorVisible;
 

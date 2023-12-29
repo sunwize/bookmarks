@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+const { fontFamily } = require('tailwindcss/defaultTheme');
 
 const config: Config = {
   content: [
@@ -15,6 +16,9 @@ const config: Config = {
       },
       boxShadow: {
         '3xl': '1px 1px 8px 2px rgba(0, 0, 0, 0.3)',
+      },
+      fontFamily: {
+        sans: ['var(--font-sans)', ...fontFamily.sans],
       },
     },
   },

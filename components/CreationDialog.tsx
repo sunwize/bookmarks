@@ -12,8 +12,8 @@ import { DialogsContext } from '@/lib/contexts/DialogsContext';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { useSharedUrl } from '@/lib/composables/useSharedUrl';
 import Button from '@/components/Button';
-import Drawer from '@/components/Drawer';
 import Tab from '@/components/Tab';
+import Drawer from '@/components/Drawer';
 
 interface Props {
   visible: boolean

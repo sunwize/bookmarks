@@ -76,8 +76,10 @@ export default function Bookmarks({ className }: Props) {
   };
 
   const onCloseEditor = () => {
-    setIsEditorVisible(false);
-    loadBookmarks();
+    if (isEditorVisible) {
+      loadBookmarks();
+    }
+    setIsEditorVisible(() => false);
   };
 
   const openCreationDialog = () => {

@@ -4,9 +4,15 @@ import { Inter } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import { DialogsContextProvider } from '@/lib/contexts/DialogsContext';
 import { ToastContainer } from 'react-toastify';
+import { cn } from '@/lib/utils';
 import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ['latin'] });
+
+const fontSans = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+});
 
 export const metadata: Metadata = {
   title: 'Bookmarks',
@@ -170,12 +176,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html
-      lang="en"
-      className="bg-slate-950 text-white leading-snug"
-    >
+    <html lang="en">
       <Head />
-      <body className={`flex flex-col min-h-[100dvh] ${inter.className}`}>
+      <body className={cn(`dark flex flex-col min-h-[100dvh] bg-slate-950 text-white leading-snug ${inter.className}`, fontSans.variable)}>
         <Navbar />
         <main className="flex flex-col w-full flex-1 bg-white/10 max-w-[650px] mx-auto py-6 px-2 md:px-6">
           <DialogsContextProvider>
