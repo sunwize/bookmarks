@@ -140,7 +140,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
       onHide={onHide}
       fullscreen={true}
     >
-      <div className="pt-6 px-3 md:px-6">
+      <div className="pt-3 md:pt-6 px-3 md:px-6">
         {
           isLoading ? (
             <div className="flex justify-center mt-12">
