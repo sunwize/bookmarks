@@ -99,7 +99,6 @@ export default function CollectionSelector({ visible, onHide }: Props) {
     <Drawer
       visible={visible}
       onHide={onHide}
-      fullscreen={true}
     >
       <div className="pt-3 md:pt-6 px-3 md:px-6">
         {
