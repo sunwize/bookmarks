@@ -180,7 +180,7 @@ export default function RootLayout({
       <Head />
       <body className={cn(`dark flex flex-col min-h-[100dvh] bg-slate-950 text-white leading-snug ${inter.className}`, fontSans.variable)}>
         <Navbar />
-        <main className="flex flex-col w-full flex-1 bg-white/10 max-w-[650px] mx-auto py-6 px-2 md:px-6">
+        <main className="flex flex-col w-full flex-1 bg-white/10 max-w-[650px] mx-auto py-3 md:py-6 px-2 md:px-6">
           <DialogsContextProvider>
             {children}
           </DialogsContextProvider>

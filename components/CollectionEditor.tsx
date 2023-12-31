@@ -8,7 +8,7 @@ import Button from '@/components/Button';
 import { FiMinusCircle, FiSave } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { useBookmarks } from '@/lib/composables/useBookmarks';
+import { useCollection } from '@/lib/composables/useCollection';
 import Drawer from '@/components/Drawer';
 
 interface Props {
@@ -31,7 +31,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
     bookmarks,
     setBookmarks,
     isLoading,
-  } = useBookmarks(collectionId, { fetchCondition: visible });
+  } = useCollection(collectionId, visible);
 
   const collectionTitle = useMemo(() => collection?.title, [collection]);
   const setCollectionTitle = (title: string) => {
@@ -132,7 +132,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
         ))
       }
     </ul>
-  ), [bookmarks, bookmarkToRemove, removeBookmark]);
+  ), [bookmarks, bookmarkToRemove]);
 
   return (
     <Drawer

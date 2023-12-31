@@ -10,7 +10,7 @@ import { Bookmark } from '@/types/bookmark';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { extractMetadata } from '@/lib/utils/metadata';
 import { DialogsContext } from '@/lib/contexts/DialogsContext';
-import { useBookmarks } from '@/lib/composables/useBookmarks';
+import { useCollection } from '@/lib/composables/useCollection';
 import Button from '@/components/Button';
 import BookmarkItem from '@/components/BookmarkItem';
 import CollectionEditor from '@/components/CollectionEditor';
@@ -32,8 +32,8 @@ export default function Bookmarks({ className }: Props) {
     setBookmarks,
     isLoading,
     isError,
-    loadBookmarks,
-  } = useBookmarks(collectionId);
+    loadCollectionAndBookmarks,
+  } = useCollection(collectionId);
 
   const onBookmarkAction = () => {
     return supabase.channel('public:bookmarks')
@@ -77,7 +77,7 @@ export default function Bookmarks({ className }: Props) {
 
   const onCloseEditor = () => {
     if (isEditorVisible) {
-      loadBookmarks();
+      loadCollectionAndBookmarks(true);
     }
     setIsEditorVisible(() => false);
   };
@@ -136,7 +136,7 @@ export default function Bookmarks({ className }: Props) {
           </div>
         ) : (
           <>
-            <div className="flex items-center justify-between gap-2 mb-6">
+            <div className="flex items-center justify-between gap-2 mb-3 md:mb-6">
               <h1 className="text-center text-3xl font-bold truncate">{collection?.title}</h1>
               <Button
                 onClick={() => setIsEditorVisible(true)}

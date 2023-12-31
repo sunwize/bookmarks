@@ -15,7 +15,7 @@ export default function BookmarkItem({ bookmark, onLoadImageError }: Props) {
       href={bookmark.url}
       target="_blank"
       className="
-        flex gap-3 overflow-hidden bg-white/10 rounded-xl px-3 py-2 transition
+        flex gap-3 overflow-hidden bg-white/10 rounded-xl p-2 md:px-3 md:py-2 transition
         active:bg-white/20 md:hover:bg-white/20
       "
     >
