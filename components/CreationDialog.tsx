@@ -147,7 +147,7 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
               value={bookmarkUrl}
               onChange={(event: ChangeEvent<HTMLInputElement>) => setBookmarkUrl(event.target.value)}
               placeholder="https://..."
-              autoFocus={true}
+              autoFocus={false}
               disabled={isExtractingBookmark}
               className="
                 block w-full bg-white/10 border-2 border-white/50 rounded-xl outline-0 px-3 py-2
@@ -180,7 +180,7 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
               value={collectionName}
               onChange={(event: ChangeEvent<HTMLInputElement>) => setCollectionName(event.target.value)}
               placeholder="eg: Date ideas"
-              autoFocus={true}
+              autoFocus={false}
               disabled={isCreatingCollection}
               className="
                 block w-full bg-white/10 border-2 border-white/50 rounded-xl outline-0 px-3 py-2
