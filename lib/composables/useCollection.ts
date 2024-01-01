@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Bookmark, BookmarkCollection } from '@/types/bookmark';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useSupabase } from '@/lib/composables/useSupabase';
@@ -12,7 +12,7 @@ export const useCollection = (collectionId: string, autoload = true) => {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-  let pageOffset = 0;
+  const pageOffset = useRef(0);
 
   const loadCollection = async () => {
     const { data: collection, error }: PostgrestSingleResponse<BookmarkCollection> = await supabase
@@ -31,7 +31,11 @@ export const useCollection = (collectionId: string, autoload = true) => {
 
   const loadBookmarks = async (reset = false) => {
     if (reset) {
-      pageOffset = 0;
+      pageOffset.current = 0;
+    }
+
+    if (pageOffset.current === -1) {
+      return;
     }
 
     const { data: bookmarks, error }: PostgrestSingleResponse<Bookmark[]> = await supabase
@@ -39,7 +43,7 @@ export const useCollection = (collectionId: string, autoload = true) => {
       .select()
       .order('created_at', { ascending: false })
       .eq('list_id', collectionId)
-      .range(pageOffset, pageOffset + LIMIT)
+      .range(pageOffset.current, pageOffset.current + LIMIT)
       .limit(LIMIT);
 
     if (error) {
@@ -49,11 +53,12 @@ export const useCollection = (collectionId: string, autoload = true) => {
 
     if (reset) {
       setBookmarks(bookmarks);
+      pageOffset.current += LIMIT;
     } else if (bookmarks.length > 0) {
       setBookmarks((val) => [...val, ...bookmarks]);
-      pageOffset += LIMIT;
+      pageOffset.current += LIMIT;
     } else {
-      pageOffset = -1;
+      pageOffset.current = -1;
     }
   };
 

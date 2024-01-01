@@ -14,12 +14,9 @@ import { useCollection } from '@/lib/composables/useCollection';
 import Button from '@/components/Button';
 import BookmarkItem from '@/components/BookmarkItem';
 import CollectionEditor from '@/components/CollectionEditor';
+import VisibilityObserver from '@/components/VisibilityObserver';
 
-interface Props {
-    className?: string
-}
-
-export default function Bookmarks({ className }: Props) {
+export default function Bookmarks() {
   const { id: collectionId } = useParams<{ id: string }>();
   const supabase = useSupabase();
   const { setIsCreationDialogVisible, setCreationTab } = useContext(DialogsContext);
@@ -32,6 +29,7 @@ export default function Bookmarks({ className }: Props) {
     setBookmarks,
     isLoading,
     isError,
+    loadBookmarks,
     loadCollectionAndBookmarks,
   } = useCollection(collectionId);
 
@@ -91,7 +89,7 @@ export default function Bookmarks({ className }: Props) {
     <>
       {
         bookmarks.length > 0 ? (
-          <ul className={`grid grid-cols-1 gap-2 ${className}`}>
+          <ul className="grid grid-cols-1 gap-2">
             {
               bookmarks.map((bookmark, index) => (
                 <li key={index}>
@@ -108,7 +106,7 @@ export default function Bookmarks({ className }: Props) {
         )
       }
     </>
-  ), [bookmarks, className]);
+  ), [bookmarks, onLoadImageError]);
 
   useEffect(() => {
     const listener = onBookmarkAction();
@@ -155,6 +153,10 @@ export default function Bookmarks({ className }: Props) {
               </Button>
             </div>
             <ListView />
+            <VisibilityObserver
+              isLoading={isLoading}
+              onVisible={() => loadBookmarks()}
+            />
 
             <Button
               onClick={openCreationDialog}
