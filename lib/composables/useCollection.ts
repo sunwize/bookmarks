@@ -3,7 +3,7 @@ import { Bookmark, BookmarkCollection } from '@/types/bookmark';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useSupabase } from '@/lib/composables/useSupabase';
 
-const LIMIT = 10;
+const LIMIT = 20;
 
 export const useCollection = (collectionId: string, autoload = true) => {
   const supabase = useSupabase();
