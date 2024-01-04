@@ -33,9 +33,7 @@ export default function VisibilityObserver({ isLoading, onVisible }: Props) {
   }, [onVisible]);
 
   return (
-    <div
-      ref={el}
-    >
+    <div ref={el}>
       {
         isLoading && (
           <div className="flex justify-center pt-3">

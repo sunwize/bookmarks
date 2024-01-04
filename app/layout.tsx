@@ -16,7 +16,7 @@ const fontSans = Inter({
 
 export const metadata: Metadata = {
   title: 'Bookmarks',
-  description: 'Your new favorite bookmark place.',
+  description: 'Your new favorite bookmarks place.',
 };
 
 const Head = () => (
