@@ -14,6 +14,7 @@ import { useSharedUrl } from '@/lib/composables/useSharedUrl';
 import Button from '@/components/Button';
 import Tab from '@/components/Tab';
 import Drawer from '@/components/Drawer';
+import { getAuthenticatedUser } from '@/lib/utils/auth';
 
 interface Props {
   visible: boolean
@@ -80,10 +81,13 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
 
     try {
       setIsCreatingCollection(true);
+      const user = await getAuthenticatedUser();
+
       const { data: collection, error }: PostgrestSingleResponse<BookmarkCollection> = await supabase
         .from('bookmark_lists')
         .insert({
           title: collectionName,
+          user_id: user.id,
         })
         .select()
         .single();
