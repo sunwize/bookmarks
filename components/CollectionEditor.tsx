@@ -146,7 +146,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
                   }
                 </Button>
               </div>
-              <hr className="border-white/40 my-3 md:my-6 -mx-3 md:-mx-6" />
+              <hr className="border-white/40 my-3 md:mt-6 -mx-3 md:-mx-6" />
               {
                 bookmarks.length > 0 ? (
                   <>
@@ -155,7 +155,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
                         bookmarks.map((bookmark) => (
                           <li
                             key={bookmark.id}
-                            className="flex items-center justify-between gap-3 border-b border-white/20 last-of-type:border-b-0 py-3 md:py-6 first-of-type:pt-0 -mx-3 md:-mx-6 px-3 md:px-6"
+                            className="flex items-center justify-between gap-3 border-b border-white/20 last-of-type:border-b-0 p-3 first-of-type:pt-0 -mx-3 md:-mx-6"
                           >
                             <div className="flex items-center gap-2 md:gap-3 flex-1 truncate">
                               <Image
