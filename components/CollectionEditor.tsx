@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import { useCollection } from '@/lib/composables/useCollection';
 import Drawer from '@/components/Drawer';
 import Image from 'next/image';
+import VisibilityObserver from '@/components/VisibilityObserver';
 
 interface Props {
     visible: boolean
@@ -32,6 +33,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
     bookmarks,
     setBookmarks,
     isLoading,
+    loadBookmarks,
   } = useCollection(collectionId, visible);
 
   const collectionTitle = useMemo(() => collection?.title, [collection]);
@@ -103,45 +105,9 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
     }
   };
 
-  const ListView = useCallback(() => (
-    <ul>
-      {
-        bookmarks.map((bookmark) => (
-          <li
-            key={bookmark.id}
-            className="flex items-center justify-between gap-3 border-b border-white/20 last-of-type:border-b-0 py-3 md:py-6 first-of-type:pt-0 -mx-3 md:-mx-6 px-3 md:px-6"
-          >
-            <div className="flex items-center gap-2 md:gap-3 flex-1 truncate">
-              <Image
-                src={bookmark.image_url}
-                alt={bookmark.title}
-                width={256}
-                height={256}
-                className="w-[50px] md:w-[70px] aspect-square object-cover rounded-lg shrink-0"
-              />
-              <div className="truncate">
-                <p className="text-lg md:text-xl font-medium truncate">{bookmark.title}</p>
-                <p className="opacity-50 truncate">{bookmark.description}</p>
-              </div>
-            </div>
-            <button
-              onClick={() => removeBookmark(bookmark)}
-              disabled={!!bookmarkToRemove}
-              className="opacity-50 active:opacity-100 md:hover:opacity-100 text-3xl shrink-0 disabled:pointer-events-none"
-            >
-              {
-                bookmarkToRemove?.id === bookmark.id ? (
-                  <AiOutlineLoading className="animate-spin" />
-                ) : (
-                  <FiMinusCircle />
-                )
-              }
-            </button>
-          </li>
-        ))
-      }
-    </ul>
-  ), [bookmarks, bookmarkToRemove]);
+  const onBottomPageReached = async () => {
+    await loadBookmarks();
+  };
 
   return (
     <Drawer
@@ -183,7 +149,49 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
               <hr className="border-white/40 my-3 md:my-6 -mx-3 md:-mx-6" />
               {
                 bookmarks.length > 0 ? (
-                  <ListView />
+                  <>
+                    <ul>
+                      {
+                        bookmarks.map((bookmark) => (
+                          <li
+                            key={bookmark.id}
+                            className="flex items-center justify-between gap-3 border-b border-white/20 last-of-type:border-b-0 py-3 md:py-6 first-of-type:pt-0 -mx-3 md:-mx-6 px-3 md:px-6"
+                          >
+                            <div className="flex items-center gap-2 md:gap-3 flex-1 truncate">
+                              <Image
+                                src={bookmark.image_url}
+                                alt={bookmark.title}
+                                width={256}
+                                height={256}
+                                className="w-[50px] md:w-[70px] aspect-square object-cover rounded-lg shrink-0"
+                              />
+                              <div className="truncate">
+                                <p className="text-lg md:text-xl font-medium truncate">{bookmark.title}</p>
+                                <p className="opacity-50 truncate">{bookmark.description}</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => removeBookmark(bookmark)}
+                              disabled={!!bookmarkToRemove}
+                              className="opacity-50 active:opacity-100 md:hover:opacity-100 text-3xl shrink-0 disabled:pointer-events-none"
+                            >
+                              {
+                                bookmarkToRemove?.id === bookmark.id ? (
+                                  <AiOutlineLoading className="animate-spin" />
+                                ) : (
+                                  <FiMinusCircle />
+                                )
+                              }
+                            </button>
+                          </li>
+                        ))
+                      }
+                    </ul>
+                    <VisibilityObserver
+                      isLoading={isLoading}
+                      onVisible={onBottomPageReached}
+                    />
+                  </>
                 ) : (
                   <p className="text-center opacity-80 pb-3 md:pb-6">No bookmarks here.</p>
                 )

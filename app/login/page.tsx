@@ -21,7 +21,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center pt-3">
       <Button
         onClick={loginWithGoogle}
         className="flex items-center gap-1"
