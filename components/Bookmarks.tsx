@@ -151,10 +151,7 @@ export default function Bookmarks() {
                 <p className="text-xl text-center opacity-50">No bookmarks here.</p>
               )
             }
-            <VisibilityObserver
-              isLoading={isLoading}
-              onVisible={onBottomPageReached}
-            />
+            <VisibilityObserver onVisible={onBottomPageReached} />
 
             <Button
               onClick={openCreationDialog}

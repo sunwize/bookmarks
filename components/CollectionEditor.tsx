@@ -187,10 +187,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
                         ))
                       }
                     </ul>
-                    <VisibilityObserver
-                      isLoading={isLoading}
-                      onVisible={onBottomPageReached}
-                    />
+                    <VisibilityObserver onVisible={onBottomPageReached} />
                   </>
                 ) : (
                   <p className="text-center opacity-80 pb-3 md:pb-6">No bookmarks here.</p>
