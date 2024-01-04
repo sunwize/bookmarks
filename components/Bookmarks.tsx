@@ -53,7 +53,7 @@ export default function Bookmarks() {
       .subscribe();
   };
 
-  const onLoadImageError = async (index: number) => {
+  const onLoadImageError = useCallback(async (index: number) => {
     const bookmark = bookmarks[index];
     const { image_url: imageUrl } = await extractMetadata(bookmark.url);
 
@@ -71,7 +71,7 @@ export default function Bookmarks() {
       },
       ...val.slice(index + 1, val.length),
     ]);
-  };
+  }, [bookmarks, setBookmarks, supabase]);
 
   const onCloseEditor = () => {
     if (isEditorVisible) {
@@ -85,28 +85,9 @@ export default function Bookmarks() {
     setIsCreationDialogVisible(true);
   };
 
-  const ListView = useCallback(() => (
-    <>
-      {
-        bookmarks.length > 0 ? (
-          <ul className="grid grid-cols-1 gap-2">
-            {
-              bookmarks.map((bookmark, index) => (
-                <li key={index}>
-                  <BookmarkItem
-                    bookmark={bookmark}
-                    onLoadImageError={() => onLoadImageError(index)}
-                  />
-                </li>
-              ))
-            }
-          </ul>
-        ) : (
-          <p className="text-xl text-center opacity-50">No bookmarks here.</p>
-        )
-      }
-    </>
-  ), [bookmarks, onLoadImageError]);
+  const onBottomPageReached = async () => {
+    await loadBookmarks();
+  };
 
   useEffect(() => {
     const listener = onBookmarkAction();
@@ -152,10 +133,27 @@ export default function Bookmarks() {
                 <span>Add a bookmark</span>
               </Button>
             </div>
-            <ListView />
+            {
+              bookmarks.length > 0 ? (
+                <ul className="grid grid-cols-1 gap-2">
+                  {
+                    bookmarks.map((bookmark, index) => (
+                      <li key={bookmark.id}>
+                        <BookmarkItem
+                          bookmark={bookmark}
+                          onLoadImageError={() => onLoadImageError(index)}
+                        />
+                      </li>
+                    ))
+                  }
+                </ul>
+              ) : (
+                <p className="text-xl text-center opacity-50">No bookmarks here.</p>
+              )
+            }
             <VisibilityObserver
               isLoading={isLoading}
-              onVisible={() => loadBookmarks()}
+              onVisible={onBottomPageReached}
             />
 
             <Button

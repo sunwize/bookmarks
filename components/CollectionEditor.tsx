@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { useCollection } from '@/lib/composables/useCollection';
 import Drawer from '@/components/Drawer';
+import Image from 'next/image';
 
 interface Props {
     visible: boolean
@@ -83,9 +84,15 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
     if (confirm) {
       try {
         setIsRemovingCollection(() => true);
-        await supabase.from('bookmark_lists')
+        const { error } = await supabase.from('bookmark_lists')
           .delete()
           .eq('id', collectionId);
+
+        if (error) {
+          toast('An error occurred', { type: 'error' });
+          return;
+        }
+
         router.replace('/');
         toast('Collection deleted', { type: 'success' });
       } catch (err) {
@@ -99,15 +106,17 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
   const ListView = useCallback(() => (
     <ul>
       {
-        bookmarks.map((bookmark, index) => (
+        bookmarks.map((bookmark) => (
           <li
-            key={index}
+            key={bookmark.id}
             className="flex items-center justify-between gap-3 border-b border-white/20 last-of-type:border-b-0 py-3 md:py-6 first-of-type:pt-0 -mx-3 md:-mx-6 px-3 md:px-6"
           >
             <div className="flex items-center gap-2 md:gap-3 flex-1 truncate">
-              <img
+              <Image
                 src={bookmark.image_url}
                 alt={bookmark.title}
+                width={256}
+                height={256}
                 className="w-[50px] md:w-[70px] aspect-square object-cover rounded-lg shrink-0"
               />
               <div className="truncate">

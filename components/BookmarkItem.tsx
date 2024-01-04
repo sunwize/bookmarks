@@ -1,6 +1,7 @@
 import { Bookmark } from '@/types/bookmark';
 import Link from 'next/link';
 import { MdOutlineHideImage } from 'react-icons/md';
+import Image from 'next/image';
 
 interface Props {
   bookmark: Omit<Bookmark, 'id'>
@@ -21,10 +22,13 @@ export default function BookmarkItem({ bookmark, onLoadImageError }: Props) {
     >
       {
         thumbnail ? (
-          <img
+          <Image
             onError={onLoadImageError}
             src={thumbnail}
             alt={bookmark.title}
+            width={150}
+            height={150}
+            quality={100}
             className="w-[70px] aspect-square object-cover rounded-xl"
           />
         ) : (
