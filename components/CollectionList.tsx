@@ -19,10 +19,10 @@ export default function CollectionList({ className }: Props) {
   const supabase = useSupabase();
   const { setIsCreationDialogVisible, setCreationTab } = useContext(DialogsContext);
 
-  const [bookmarkLists, setBookmarkLists] = useState<BookmarkCollection[]>([]);
+  const [collections, setCollections] = useState<BookmarkCollection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const loadBookmarkLists = async () => {
+  const loadCollections = async () => {
     try {
       setIsLoading(true);
       const { data, error }: PostgrestSingleResponse<BookmarkCollection[]> = await supabase
@@ -35,7 +35,7 @@ export default function CollectionList({ className }: Props) {
         return;
       }
 
-      setBookmarkLists(data);
+      setCollections(data);
     } finally {
       setIsLoading(false);
     }
@@ -48,16 +48,16 @@ export default function CollectionList({ className }: Props) {
         { event: 'INSERT', schema: 'public', table: 'bookmark_lists' },
         (payload) => {
           const collection = payload.new as BookmarkCollection;
-          setBookmarkLists((val) => [collection, ...val]);
+          setCollections((val) => [collection, ...val]);
         })
       .subscribe();
   };
 
   const ListView = useCallback(() => (
-    bookmarkLists.length > 0 ? (
+    collections.length > 0 ? (
       <ul className={`grid grid-cols-1 gap-2 ${className}`}>
         {
-          bookmarkLists.map((bookmarkList, index) => (
+          collections.map((bookmarkList, index) => (
             <li key={index}>
               <Link
                 href={`/collection/${bookmarkList.id}`}
@@ -77,9 +77,9 @@ export default function CollectionList({ className }: Props) {
         }
       </ul>
     ) : (
-      <p className="text-xl text-center opacity-50">No list found.</p>
+      <p className="text-xl text-center opacity-50">No collection found.</p>
     )
-  ), [bookmarkLists, className]);
+  ), [collections, className]);
 
   const openCreationDialog = () => {
     setCreationTab('collection');
@@ -87,7 +87,7 @@ export default function CollectionList({ className }: Props) {
   };
 
   useEffect(() => {
-    loadBookmarkLists();
+    loadCollections();
 
     const listener = onCollectionAdded();
 
