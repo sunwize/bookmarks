@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Bookmark, BookmarkCollection } from '@/types/bookmark';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useSupabase } from '@/lib/composables/useSupabase';
@@ -14,7 +14,7 @@ export const useCollection = (collectionId: string, autoload = true) => {
   const [isError, setIsError] = useState(false);
   const pageOffset = useRef(0);
 
-  const loadCollection = async () => {
+  const loadCollection = useCallback(async () => {
     const { data: collection, error }: PostgrestSingleResponse<BookmarkCollection> = await supabase
       .from('bookmark_lists')
       .select()
@@ -27,9 +27,9 @@ export const useCollection = (collectionId: string, autoload = true) => {
     }
 
     setCollection(() => collection);
-  };
+  }, [collectionId, supabase]);
 
-  const loadBookmarks = async (reset = false) => {
+  const loadBookmarks = useCallback(async (reset = false) => {
     if (reset) {
       pageOffset.current = 0;
     }
@@ -52,7 +52,7 @@ export const useCollection = (collectionId: string, autoload = true) => {
     }
 
     if (reset) {
-      setBookmarks(bookmarks);
+      setBookmarks(() => bookmarks);
       pageOffset.current += LIMIT;
     } else if (bookmarks.length > 0) {
       setBookmarks((val) => [...val, ...bookmarks]);
@@ -60,9 +60,13 @@ export const useCollection = (collectionId: string, autoload = true) => {
     } else {
       pageOffset.current = -1;
     }
-  };
 
-  const loadCollectionAndBookmarks = async (reset = false) => {
+    if (bookmarks.length < LIMIT) {
+      pageOffset.current = -1;
+    }
+  }, [collectionId, supabase]);
+
+  const loadCollectionAndBookmarks = useCallback(async (reset = false) => {
     try {
       setIsLoading(true);
 
@@ -75,13 +79,14 @@ export const useCollection = (collectionId: string, autoload = true) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [loadBookmarks, loadCollection]);
 
   useEffect(() => {
     if (autoload) {
-      loadCollectionAndBookmarks(true);
+      loadCollectionAndBookmarks(true)
+        .catch((err) => console.error(err));
     }
-  }, [autoload]);
+  }, [autoload, loadCollectionAndBookmarks]);
 
   return {
     collection,
