@@ -11,9 +11,9 @@ import { useSupabase } from '@/lib/composables/useSupabase';
 import { extractMetadata } from '@/lib/utils/metadata';
 import { DialogsContext } from '@/lib/contexts/DialogsContext';
 import { useCollection } from '@/lib/composables/useCollection';
-import Button from '@/components/Button';
+import Button from '@/components/ui/Button';
 import BookmarkItem from '@/components/BookmarkItem';
-import CollectionEditor from '@/components/CollectionEditor';
+import CollectionEditor from '@/components/drawers/CollectionEditor';
 import VisibilityObserver from '@/components/VisibilityObserver';
 
 export default function Bookmarks() {

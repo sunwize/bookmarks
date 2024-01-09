@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@/components/Button';
+import Button from '@/components/ui/Button';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import Image from 'next/image';
 

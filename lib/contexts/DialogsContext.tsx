@@ -3,8 +3,8 @@
 import { createContext, useEffect, useState } from 'react';
 
 import type { Bookmark } from '@/types/bookmark';
-import CollectionSelector from '@/components/CollectionSelector';
-import CreationDialog from '@/components/CreationDialog';
+import CollectionSelector from '@/components/drawers/CollectionSelector';
+import CreationDialog from '@/components/drawers/CreationDialog';
 
 type CreationOption = 'bookmark' | 'collection';
 

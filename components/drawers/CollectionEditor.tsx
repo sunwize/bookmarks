@@ -4,12 +4,12 @@ import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { Bookmark } from '@/types/bookmark';
 import { AiOutlineLoading } from 'react-icons/ai';
-import Button from '@/components/Button';
+import Button from '@/components/ui/Button';
 import { FiMinusCircle, FiSave } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { useCollection } from '@/lib/composables/useCollection';
-import Drawer from '@/components/Drawer';
+import Drawer from '@/components/ui/Drawer';
 import Image from 'next/image';
 import VisibilityObserver from '@/components/VisibilityObserver';
 

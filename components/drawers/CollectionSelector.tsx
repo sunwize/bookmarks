@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@/components/Button';
+import Button from '@/components/ui/Button';
 import { useContext, useEffect, useState } from 'react';
 import { BookmarkCollection } from '@/types/bookmark';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
@@ -10,7 +10,7 @@ import { DialogsContext } from '@/lib/contexts/DialogsContext';
 import BookmarkItem from '@/components/BookmarkItem';
 import { useRouter } from 'next/navigation';
 import { FiPlus } from 'react-icons/fi';
-import Drawer from '@/components/Drawer';
+import Drawer from '@/components/ui/Drawer';
 
 type Props = {
   visible: boolean

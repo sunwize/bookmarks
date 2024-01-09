@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/ui/Navbar';
 import { DialogsContextProvider } from '@/lib/contexts/DialogsContext';
 import { ToastContainer } from 'react-toastify';
 import { cn } from '@/lib/utils';

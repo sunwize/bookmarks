@@ -11,9 +11,9 @@ import { extractMetadata } from '@/lib/utils/metadata';
 import { DialogsContext } from '@/lib/contexts/DialogsContext';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { useSharedUrl } from '@/lib/composables/useSharedUrl';
-import Button from '@/components/Button';
-import Tab from '@/components/Tab';
-import Drawer from '@/components/Drawer';
+import Button from '@/components/ui/Button';
+import Tab from '@/components/ui/Tab';
+import Drawer from '@/components/ui/Drawer';
 import { getAuthenticatedUser } from '@/lib/utils/auth';
 
 type Props = {

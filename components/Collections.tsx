@@ -6,7 +6,7 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { MdOutlineBookmarkAdd } from 'react-icons/md';
-import Button from '@/components/Button';
+import Button from '@/components/ui/Button';
 import { DialogsContext } from '@/lib/contexts/DialogsContext';
 import Link from 'next/link';
 import { FiChevronRight } from 'react-icons/fi';
