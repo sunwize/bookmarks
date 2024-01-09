@@ -1,16 +1,16 @@
-interface Props {
+type Props = {
   className?: string
   children: React.ReactNode
 }
 
-interface ItemProps {
+type ItemProps = {
   value: string
   selectedTab?: string
   onClick?: (value: string) => void
   children: React.ReactNode
 }
 
-interface ContentProps {
+type ContentProps = {
   value: string
   selectedTab?: string
   children: React.ReactNode

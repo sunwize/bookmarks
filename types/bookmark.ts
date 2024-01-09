@@ -1,4 +1,4 @@
-export interface Bookmark {
+export type Bookmark = {
     id: string
     title: string
     description: string
@@ -8,7 +8,7 @@ export interface Bookmark {
     domain: string
 }
 
-export interface BookmarkCollection {
+export type BookmarkCollection = {
     id: string
     title: string
 }

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Bookmark } from '@/types/bookmark';
 
-interface ApiResponse {
+type ApiResponse = {
   title: string
   description: string
   url: string

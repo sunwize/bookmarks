@@ -1,12 +1,10 @@
-import CollectionList from '@/components/CollectionList';
+import Collections from '@/components/Collections';
 import AuthWrapper from '@/components/AuthWrapper';
 
 export default function Home() {
   return (
-    <>
-      <AuthWrapper>
-        <CollectionList />
-      </AuthWrapper>
-    </>
+    <AuthWrapper>
+      <Collections />
+    </AuthWrapper>
   );
 }

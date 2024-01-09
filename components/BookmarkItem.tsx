@@ -4,7 +4,7 @@ import { MdOutlineHideImage } from 'react-icons/md';
 import Image from 'next/image';
 import { useRef } from 'react';
 
-interface Props {
+type Props = {
   bookmark: Omit<Bookmark, 'id'>
   onLoadImageError?: () => void
 }

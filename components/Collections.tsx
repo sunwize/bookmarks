@@ -11,11 +11,11 @@ import { DialogsContext } from '@/lib/contexts/DialogsContext';
 import Link from 'next/link';
 import { FiChevronRight } from 'react-icons/fi';
 
-interface Props {
+type Props = {
   className?: string
 }
 
-export default function CollectionList({ className }: Props) {
+export default function Collections({ className }: Props) {
   const supabase = useSupabase();
   const { setIsCreationDialogVisible, setCreationTab } = useContext(DialogsContext);
 
@@ -57,16 +57,16 @@ export default function CollectionList({ className }: Props) {
     collections.length > 0 ? (
       <ul className={`grid grid-cols-1 gap-2 ${className}`}>
         {
-          collections.map((bookmarkList, index) => (
+          collections.map((collection, index) => (
             <li key={index}>
               <Link
-                href={`/collection/${bookmarkList.id}`}
+                href={`/collection/${collection.id}`}
                 className="
                   flex justify-between w-full text-left border-2 border-dashed border-white/20 rounded-xl px-4 py-5 transition
                   active:bg-white/10 md:hover:bg-white/10
                 "
               >
-                <span className="text-2xl font-medium tracking-wide truncate">{bookmarkList.title}</span>
+                <span className="text-2xl font-medium tracking-wide truncate">{collection.title}</span>
                 <FiChevronRight
                   size={30}
                   className="opacity-80 shrink-0"

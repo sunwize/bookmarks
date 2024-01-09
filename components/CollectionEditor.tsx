@@ -13,7 +13,7 @@ import Drawer from '@/components/Drawer';
 import Image from 'next/image';
 import VisibilityObserver from '@/components/VisibilityObserver';
 
-interface Props {
+type Props = {
     visible: boolean
     collectionId: string
     onHide?: () => void

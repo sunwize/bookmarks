@@ -2,7 +2,7 @@
 
 import { Drawer as DrawerPrimitive } from 'vaul';
 
-interface Props {
+type Props = {
     visible: boolean
     onHide?: () => void
     children: React.ReactNode

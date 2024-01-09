@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { FiPlus } from 'react-icons/fi';
 import Drawer from '@/components/Drawer';
 
-interface Props {
+type Props = {
   visible: boolean
   onHide?: () => void
 }
@@ -27,10 +27,10 @@ export default function CollectionSelector({ visible, onHide }: Props) {
     setCreationTab,
   } = useContext(DialogsContext);
 
-  const [bookmarkLists, setBookmarkLists] = useState<BookmarkCollection[]>([]);
+  const [collections, setCollections] = useState<BookmarkCollection[]>([]);
   const [isAdding, setIsAdding] = useState(false);
 
-  const loadBookmarkLists = async () => {
+  const loadCollections = async () => {
     const { data }: PostgrestSingleResponse<BookmarkCollection[]> = await supabase
       .from('bookmark_lists')
       .select()
@@ -40,7 +40,7 @@ export default function CollectionSelector({ visible, onHide }: Props) {
       return;
     }
 
-    setBookmarkLists(data);
+    setCollections(data);
   };
 
   const saveBookmark = async (collectionId: string) => {
@@ -80,7 +80,7 @@ export default function CollectionSelector({ visible, onHide }: Props) {
         { event: 'INSERT', schema: 'public', table: 'bookmark_lists' },
         (payload) => {
           const collection = payload.new as BookmarkCollection;
-          setBookmarkLists((val) => [collection, ...val]);
+          setCollections((val) => [collection, ...val]);
         });
   };
 
@@ -88,7 +88,7 @@ export default function CollectionSelector({ visible, onHide }: Props) {
 
   useEffect(() => {
     if (visible) {
-      loadBookmarkLists();
+      loadCollections();
       listener.subscribe();
     } else {
       listener.unsubscribe();
@@ -122,7 +122,7 @@ export default function CollectionSelector({ visible, onHide }: Props) {
         <div className="border-b-2 border-white/20 -mx-3 md:-mx-6" />
         <ul className="grid grid-cols-1 gap-2">
           {
-            bookmarkLists.map((list) => (
+            collections.map((list) => (
               <li
                 key={list.id}
                 className="border-b-2 border-white/20 px-6 py-3 -mx-3 md:-mx-6"

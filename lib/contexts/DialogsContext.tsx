@@ -8,7 +8,7 @@ import CreationDialog from '@/components/CreationDialog';
 
 type CreationOption = 'bookmark' | 'collection';
 
-interface ContextProps {
+type ContextProps = {
     isCreationDialogVisible: boolean
     setIsCreationDialogVisible: (visible: boolean) => void
     isCollectionSelectorVisible: boolean

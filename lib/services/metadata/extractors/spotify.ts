@@ -1,7 +1,7 @@
 import { Bookmark } from '@/types/bookmark';
 import axios from 'axios';
 
-interface Response {
+type Response = {
     title: string
     description: string
     author_name: string

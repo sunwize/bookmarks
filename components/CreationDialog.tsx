@@ -16,7 +16,7 @@ import Tab from '@/components/Tab';
 import Drawer from '@/components/Drawer';
 import { getAuthenticatedUser } from '@/lib/utils/auth';
 
-interface Props {
+type Props = {
   visible: boolean
   selectedTab?: string
   onHide?: () => void
