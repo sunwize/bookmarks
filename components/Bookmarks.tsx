@@ -155,7 +155,7 @@ export default function Bookmarks() {
 
             <Button
               onClick={openCreationDialog}
-              className="md:hidden fixed bottom-28 right-3 !rounded-full shadow-3xl !p-4"
+              className="md:hidden fixed bottom-20 right-3 !rounded-full shadow-3xl !p-4"
             >
               <MdOutlineBookmarkAdd size={40} />
             </Button>
