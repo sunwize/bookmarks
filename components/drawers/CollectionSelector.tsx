@@ -11,6 +11,7 @@ import BookmarkItem from '@/components/BookmarkItem';
 import { useRouter } from 'next/navigation';
 import { FiPlus } from 'react-icons/fi';
 import Drawer from '@/components/ui/Drawer';
+import { getAuthenticatedUser } from '@/lib/utils/auth';
 
 type Props = {
   visible: boolean
@@ -49,10 +50,13 @@ export default function CollectionSelector({ visible, onHide }: Props) {
         return;
       }
 
+      const user = await getAuthenticatedUser();
+
       setIsAdding(true);
 
       await supabase.from('bookmarks')
         .insert({
+          user_id: user.id,
           list_id: collectionId,
           title: bookmark.title,
           description: bookmark.description,
