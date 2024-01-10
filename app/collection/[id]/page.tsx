@@ -1,7 +1,7 @@
 import Bookmarks from '@/components/Bookmarks';
 import AuthWrapper from '@/components/AuthWrapper';
 
-export default async function List() {
+export default function List() {
   return (
     <>
       <AuthWrapper>
