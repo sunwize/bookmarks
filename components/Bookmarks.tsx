@@ -3,7 +3,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { AiOutlineLoading } from 'react-icons/ai';
-import { FiEdit3, FiPlus } from 'react-icons/fi';
+import { FiMoreVertical, FiPlus } from 'react-icons/fi';
 import { MdOutlineBookmarkAdd } from 'react-icons/md';
 
 import { Bookmark } from '@/types/bookmark';
@@ -15,6 +15,7 @@ import Button from '@/components/ui/Button';
 import BookmarkItem from '@/components/BookmarkItem';
 import CollectionEditor from '@/components/drawers/CollectionEditor';
 import VisibilityObserver from '@/components/VisibilityObserver';
+import CollectionActions, { CollectionActionType } from '@/components/drawers/CollectionActions';
 
 export default function Bookmarks() {
   const { id: collectionId } = useParams<{ id: string }>();
@@ -22,6 +23,7 @@ export default function Bookmarks() {
   const { setIsCreationDialogVisible, setCreationTab } = useContext(DialogsContext);
 
   const [isEditorVisible, setIsEditorVisible] = useState(false);
+  const [isActionsVisible, setIsActionsVisible] = useState(false);
 
   const {
     collection,
@@ -89,6 +91,17 @@ export default function Bookmarks() {
     await loadBookmarks();
   };
 
+  const onCollectionAction = (type: CollectionActionType) => {
+    switch (type) {
+      case 'edit':
+        setIsActionsVisible(false);
+        setIsEditorVisible(true);
+        break;
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
     const listener = onBookmarkAction();
 
@@ -118,10 +131,10 @@ export default function Bookmarks() {
             <div className="flex items-center justify-between gap-2 mb-3 md:mb-6">
               <h1 className="text-center text-3xl font-bold truncate">{collection?.title}</h1>
               <Button
-                onClick={() => setIsEditorVisible(true)}
+                onClick={() => setIsActionsVisible(true)}
                 className="text-2xl shrink-0 !bg-transparent text-white/50 active:text-white md:hover:text-white"
               >
-                <FiEdit3 />
+                <FiMoreVertical />
               </Button>
             </div>
             <div className="hidden md:block mb-3">
@@ -160,6 +173,16 @@ export default function Bookmarks() {
               <MdOutlineBookmarkAdd size={40} />
             </Button>
           </>
+        )
+      }
+      {
+        collection && (
+          <CollectionActions
+            visible={isActionsVisible}
+            onHide={() => setIsActionsVisible(false)}
+            onAction={onCollectionAction}
+            collection={collection}
+          />
         )
       }
       <CollectionEditor
