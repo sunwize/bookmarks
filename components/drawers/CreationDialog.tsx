@@ -124,8 +124,8 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
       visible={visible}
       onHide={onHide}
     >
-      <Tab className="pt-3 md:pt-6 px-3 md:px-6 mb-6">
-        <div className="flex items-center gap-2">
+      <Tab>
+        <div className="flex items-center gap-2 p-3">
           <Tab.Item
             value="bookmark"
             selectedTab={tab}
@@ -142,72 +142,76 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
           </Tab.Item>
         </div>
 
-        <hr className="border-white/20 my-3 md:my-6 -mx-3 md:-mx-6" />
+        <hr className="border-white/20" />
 
         <Tab.Content
           value="bookmark"
           selectedTab={tab}
         >
-          <label>
-            <p className="font-medium mb-1">Bookmark URL</p>
-            <input
-              value={bookmarkUrl}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => setBookmarkUrl(event.target.value)}
-              placeholder="https://..."
-              autoFocus={false}
-              disabled={isExtractingBookmark}
-              className="
+          <div className="p-3">
+            <label>
+              <p className="font-medium mb-1">Bookmark URL</p>
+              <input
+                value={bookmarkUrl}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => setBookmarkUrl(event.target.value)}
+                placeholder="https://..."
+                autoFocus={false}
+                disabled={isExtractingBookmark}
+                className="
                 block w-full bg-white/10 border-2 border-white/50 rounded-xl outline-0 px-3 py-2
                 focus:border-white
               "
-            />
-          </label>
-          <div className="text-xl mt-6">
-            <Button
-              onClick={() => extractBookmark(bookmarkUrl)}
-              disabled={!bookmarkUrl || isExtractingBookmark}
-              className="flex items-center justify-center gap-2 w-full"
-            >
-              {
-                isExtractingBookmark && (
-                  <AiOutlineLoading className="animate-spin" />
-                )
-              }
-              Create bookmark
-            </Button>
+              />
+            </label>
+            <div className="text-xl mt-6">
+              <Button
+                onClick={() => extractBookmark(bookmarkUrl)}
+                disabled={!bookmarkUrl || isExtractingBookmark}
+                className="flex items-center justify-center gap-2 w-full"
+              >
+                {
+                  isExtractingBookmark && (
+                    <AiOutlineLoading className="animate-spin"/>
+                  )
+                }
+                Create bookmark
+              </Button>
+            </div>
           </div>
         </Tab.Content>
         <Tab.Content
           value="collection"
           selectedTab={tab}
         >
-          <label>
-            <p className="font-medium mb-1">Collection name</p>
-            <input
-              value={collectionName}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => setCollectionName(event.target.value)}
-              placeholder="eg: Date ideas"
-              autoFocus={false}
-              disabled={isCreatingCollection}
-              className="
+          <div className="p-3">
+            <label>
+              <p className="font-medium mb-1">Collection name</p>
+              <input
+                value={collectionName}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => setCollectionName(event.target.value)}
+                placeholder="eg: Date ideas"
+                autoFocus={false}
+                disabled={isCreatingCollection}
+                className="
                 block w-full bg-white/10 border-2 border-white/50 rounded-xl outline-0 px-3 py-2
                 focus:border-white
               "
-            />
-          </label>
-          <div className="text-xl mt-6">
-            <Button
-              onClick={saveCollection}
-              disabled={!collectionName || isCreatingCollection}
-              className="flex items-center justify-center gap-2 w-full"
-            >
-              {
-                isCreatingCollection && (
-                  <AiOutlineLoading className="animate-spin" />
-                )
-              }
-              Create collection
-            </Button>
+              />
+            </label>
+            <div className="text-xl mt-6">
+              <Button
+                onClick={saveCollection}
+                disabled={!collectionName || isCreatingCollection}
+                className="flex items-center justify-center gap-2 w-full"
+              >
+                {
+                  isCreatingCollection && (
+                    <AiOutlineLoading className="animate-spin"/>
+                  )
+                }
+                Create collection
+              </Button>
+            </div>
           </div>
         </Tab.Content>
       </Tab>
