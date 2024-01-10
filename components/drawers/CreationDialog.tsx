@@ -41,8 +41,11 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
   const [isCreatingCollection, setIsCreatingCollection] = useState(false);
 
   const saveBookmarkToCollection = async (bookmark: Omit<Bookmark, 'id'>) => {
+    const user = await getAuthenticatedUser();
+
     await supabase.from('bookmarks')
       .insert({
+        user_id: user.id,
         list_id: id,
         title: bookmark.title,
         description: bookmark.description,
