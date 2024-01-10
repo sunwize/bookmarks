@@ -23,7 +23,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
   const supabase = useSupabase();
   const router = useRouter();
 
-  const [isUpdatingCollectionName, setIsUpdatingCollectionName] = useState(false);
+  const [isUpdatingCollectionTitle, setIsUpdatingCollectionTitle] = useState(false);
   const [bookmarkToRemove, setBookmarkToRemove] = useState<Bookmark|null>(null);
   const [isRemovingCollection, setIsRemovingCollection] = useState(false);
 
@@ -52,16 +52,17 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
     }
 
     try {
-      setIsUpdatingCollectionName(true);
+      setIsUpdatingCollectionTitle(true);
       await supabase.from('bookmark_lists')
         .update({
           title: collectionTitle,
         })
         .eq('id', collectionId);
+      toast('Collection updated', { type: 'success' });
     } catch (err) {
       console.error(err);
     } finally {
-      setIsUpdatingCollectionName(false);
+      setIsUpdatingCollectionTitle(false);
     }
   };
 
@@ -114,10 +115,10 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
       visible={visible}
       onHide={onHide}
     >
-      <div className="pt-3 md:pt-6 px-3 md:px-6">
+      <div>
         {
           isLoading ? (
-            <div className="flex justify-center mt-12">
+            <div className="flex justify-center my-6">
               <AiOutlineLoading
                 size={60}
                 className="animate-spin opacity-50"
@@ -125,20 +126,20 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
             </div>
           ) : (
             <div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between p-3">
                 <input
                   value={collectionTitle}
                   onChange={(event: ChangeEvent<HTMLInputElement>) => setCollectionTitle(event.target.value)}
                   placeholder="Collection name"
-                  className="block w-full bg-white/10 border-2 border-white/50 rounded-r-none border-r-0 rounded-xl outline-0 px-3 py-2 focus:border-white"
+                  className="block w-full bg-white/10 border-2 border-white/50 rounded-r-none border-r-0 rounded-xl outline-0 md:text-2xl px-3 py-2 focus:border-white"
                 />
                 <Button
                   onClick={updateCollectionName}
-                  className="text-2xl shrink-0 rounded-l-none"
-                  disabled={isUpdatingCollectionName || !collectionTitle}
+                  className="text-2xl md:text-4xl shrink-0 rounded-l-none"
+                  disabled={isUpdatingCollectionTitle || !collectionTitle}
                 >
                   {
-                    isUpdatingCollectionName ? (
+                    isUpdatingCollectionTitle ? (
                       <AiOutlineLoading className="animate-spin" />
                     ) : (
                       <FiSave />
@@ -146,7 +147,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
                   }
                 </Button>
               </div>
-              <hr className="border-white/40 my-3 md:mt-6 -mx-3 md:-mx-6" />
+              <hr className="border-white/40 mb-3" />
               {
                 bookmarks.length > 0 ? (
                   <>
@@ -155,7 +156,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
                         bookmarks.map((bookmark) => (
                           <li
                             key={bookmark.id}
-                            className="flex items-center justify-between gap-3 border-b border-white/20 last-of-type:border-b-0 p-3 first-of-type:pt-0 -mx-3 md:-mx-6"
+                            className="flex items-center justify-between gap-3 border-b border-white/20 last-of-type:border-b-0 p-3 first-of-type:pt-0"
                           >
                             <div className="flex items-center gap-2 md:gap-3 flex-1 truncate">
                               <Image
@@ -193,7 +194,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
                   <p className="text-center opacity-80 pb-3 md:pb-6">No bookmarks here.</p>
                 )
               }
-              <footer className="sticky bottom-0 bg-slate-950 border-t border-white/40 p-3 md:p-6 -mx-3 md:-mx-6">
+              <footer className="sticky bottom-0 bg-slate-950 border-t border-white/40 p-3">
                 <Button
                   onClick={removeCollection}
                   disabled={isRemovingCollection}
