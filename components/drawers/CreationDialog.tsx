@@ -14,7 +14,7 @@ import { useSharedUrl } from '@/lib/composables/useSharedUrl';
 import Button from '@/components/ui/Button';
 import Tab from '@/components/ui/Tab';
 import Drawer from '@/components/ui/Drawer';
-import { getAuthenticatedUser } from '@/lib/utils/auth';
+import { useAuth } from '@/lib/contexts/AuthContext';
 
 type Props = {
   visible: boolean
@@ -28,6 +28,7 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
   const { id } = useParams<{ id: string }>();
   const pathname = usePathname();
   const router = useRouter();
+  const { user } = useAuth();
   const { setBookmark, setIsCollectionSelectorVisible, setIsCreationDialogVisible } = useContext(DialogsContext);
 
   const [tab, setTab] = useState(selectedTab);
@@ -41,7 +42,9 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
   const [isCreatingCollection, setIsCreatingCollection] = useState(false);
 
   const saveBookmarkToCollection = async (bookmark: Omit<Bookmark, 'id'>) => {
-    const user = await getAuthenticatedUser();
+    if (!user) {
+      return;
+    }
 
     await supabase.from('bookmarks')
       .insert({
@@ -78,13 +81,12 @@ export default function CreationDialog({ visible, selectedTab = 'bookmark', onHi
   };
 
   const saveCollection = async () => {
-    if (!collectionName) {
+    if (!collectionName || !user) {
       return;
     }
 
     try {
       setIsCreatingCollection(true);
-      const user = await getAuthenticatedUser();
 
       const { data: collection, error }: PostgrestSingleResponse<BookmarkCollection> = await supabase
         .from('bookmark_lists')

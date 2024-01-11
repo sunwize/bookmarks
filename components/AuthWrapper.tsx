@@ -12,9 +12,9 @@ export default function AuthWrapper({ children }: Props) {
   const router = useRouter();
 
   const redirectIfNotAuthenticated = async () => {
-    const { data: { user } } = await supabaseClient.auth.getUser();
+    const { data: { session } } = await supabaseClient.auth.getSession();
 
-    if (!user) {
+    if (!session?.user) {
       await supabaseClient.auth.signOut();
       router.replace('/login');
     }

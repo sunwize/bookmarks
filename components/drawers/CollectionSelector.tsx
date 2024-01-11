@@ -11,7 +11,7 @@ import BookmarkItem from '@/components/BookmarkItem';
 import { useRouter } from 'next/navigation';
 import { FiPlus } from 'react-icons/fi';
 import Drawer from '@/components/ui/Drawer';
-import { getAuthenticatedUser } from '@/lib/utils/auth';
+import { useAuth } from '@/lib/contexts/AuthContext';
 
 type Props = {
   visible: boolean
@@ -21,6 +21,7 @@ type Props = {
 export default function CollectionSelector({ visible, onHide }: Props) {
   const supabase = useSupabase();
   const router = useRouter();
+  const { user } = useAuth();
   const {
     bookmark,
     setIsCollectionSelectorVisible,
@@ -46,11 +47,9 @@ export default function CollectionSelector({ visible, onHide }: Props) {
 
   const saveBookmark = async (collectionId: string) => {
     try {
-      if (!bookmark) {
+      if (!bookmark || !user) {
         return;
       }
-
-      const user = await getAuthenticatedUser();
 
       setIsAdding(true);
 

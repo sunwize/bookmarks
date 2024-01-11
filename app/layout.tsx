@@ -6,6 +6,7 @@ import { DialogsContextProvider } from '@/lib/contexts/DialogsContext';
 import { ToastContainer } from 'react-toastify';
 import { cn } from '@/lib/utils';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthContextProvider } from '@/lib/contexts/AuthContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -181,9 +182,11 @@ export default function RootLayout({
       <body className={cn(`dark flex flex-col min-h-[100dvh] bg-slate-950 text-white leading-snug ${inter.className}`, fontSans.variable)}>
         <Navbar />
         <main className="flex flex-col w-full flex-1 bg-white/10 max-w-[650px] mx-auto py-3 md:py-6 px-2 md:px-6">
-          <DialogsContextProvider>
-            {children}
-          </DialogsContextProvider>
+          <AuthContextProvider>
+            <DialogsContextProvider>
+              {children}
+            </DialogsContextProvider>
+          </AuthContextProvider>
           <ToastContainer
             position="bottom-center"
             autoClose={3000}

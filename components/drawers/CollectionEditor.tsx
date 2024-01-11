@@ -8,10 +8,10 @@ import { toast } from 'react-toastify';
 
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { useCollection } from '@/lib/composables/useCollection';
-import { useAuth } from '@/lib/composables/useAuth';
 import Button from '@/components/ui/Button';
 import Drawer from '@/components/ui/Drawer';
 import VisibilityObserver from '@/components/VisibilityObserver';
+import { useAuth } from '@/lib/contexts/AuthContext';
 
 type Props = {
     visible: boolean

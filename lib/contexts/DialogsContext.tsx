@@ -28,7 +28,7 @@ export const DialogsContext = createContext<ContextProps>({
   setCreationTab: (tab: CreationOption) => {},
 });
 
-export function DialogsContextProvider({ children }: {children: React.ReactNode}) {
+export function DialogsContextProvider({ children }: { children: React.ReactNode }) {
   const [isBookmarkExtractorVisible, _setIsBookmarkExtractorVisible] = useState(false);
   const [isCollectionSelectorVisible, _setIsCollectionSelectorVisible] = useState(false);
   const [bookmark, _setBookmark] = useState<Omit<Bookmark, 'id'>>();

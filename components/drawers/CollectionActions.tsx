@@ -1,9 +1,9 @@
 import Drawer from '@/components/ui/Drawer';
 import { BookmarkCollection } from '@/types/bookmark';
 import Button from '@/components/ui/Button';
-import { FiEdit3, FiTrash, FiUserPlus } from 'react-icons/fi';
+import { FiEdit3, FiLock, FiTrash } from 'react-icons/fi';
 import { useEffect, useState } from 'react';
-import { getAuthenticatedUser } from '@/lib/utils/auth';
+import { useAuth } from '@/lib/contexts/AuthContext';
 
 export type CollectionActionType = 'edit' | 'add-user' | 'delete';
 
@@ -27,14 +27,12 @@ const ActionButton = (
 );
 
 export default function CollectionActions({ visible, onHide, collection, onAction }: Props) {
+  const { user } = useAuth();
   const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      const user = await getAuthenticatedUser();
-      setIsOwner(user.id === collection.user_id || !collection.user_id);
-    })();
-  }, [collection]);
+    setIsOwner(user?.id === collection.user_id || !collection.user_id);
+  }, [collection, user]);
 
   return (
     <Drawer
@@ -49,8 +47,8 @@ export default function CollectionActions({ visible, onHide, collection, onActio
           <span>Edit</span>
         </ActionButton>
         <ActionButton onClick={() => onAction('add-user')}>
-          <FiUserPlus size={22}/>
-          <span>Share with someone</span>
+          <FiLock size={22}/>
+          <span>Manage access</span>
         </ActionButton>
       </div>
       {
