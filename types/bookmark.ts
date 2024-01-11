@@ -1,5 +1,6 @@
 export type Bookmark = {
     id: string
+    user_id: string | null
     title: string
     description: string
     url: string
@@ -10,5 +11,6 @@ export type Bookmark = {
 
 export type BookmarkCollection = {
     id: string
+    user_id: string | null
     title: string
 }
