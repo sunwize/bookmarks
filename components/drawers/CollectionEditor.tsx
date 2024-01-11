@@ -1,16 +1,16 @@
 'use client';
 
-import { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { useSupabase } from '@/lib/composables/useSupabase';
-import { Bookmark } from '@/types/bookmark';
+import { ChangeEvent, useMemo, useState } from 'react';
 import { AiOutlineLoading } from 'react-icons/ai';
-import Button from '@/components/ui/Button';
-import { FiMinusCircle, FiSave } from 'react-icons/fi';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
-import { useCollection } from '@/lib/composables/useCollection';
-import Drawer from '@/components/ui/Drawer';
+import { FiMinusCircle } from 'react-icons/fi';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
+
+import { useSupabase } from '@/lib/composables/useSupabase';
+import { useCollection } from '@/lib/composables/useCollection';
+import { useAuth } from '@/lib/composables/useAuth';
+import Button from '@/components/ui/Button';
+import Drawer from '@/components/ui/Drawer';
 import VisibilityObserver from '@/components/VisibilityObserver';
 
 type Props = {
@@ -21,11 +21,10 @@ type Props = {
 
 export default function CollectionEditor({ visible, collectionId, onHide }: Props) {
   const supabase = useSupabase();
-  const router = useRouter();
+  const { user } = useAuth();
 
-  const [isUpdatingCollectionTitle, setIsUpdatingCollectionTitle] = useState(false);
-  const [bookmarkToRemove, setBookmarkToRemove] = useState<Bookmark|null>(null);
-  const [isRemovingCollection, setIsRemovingCollection] = useState(false);
+  const [bookmarkIdsToRemove, setBookmarkIdsToRemove] = useState<string[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
 
   const {
     collection,
@@ -35,6 +34,11 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
     isLoading,
     loadBookmarks,
   } = useCollection(collectionId, visible);
+
+  const bookmarksFiltered = useMemo(
+    () => bookmarks.filter((bookmark) => !bookmarkIdsToRemove.includes(bookmark.id)),
+    [bookmarks, bookmarkIdsToRemove]
+  );
 
   const collectionTitle = useMemo(() => collection?.title, [collection]);
   const setCollectionTitle = (title: string) => {
@@ -51,63 +55,56 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
       return;
     }
 
-    try {
-      setIsUpdatingCollectionTitle(true);
-      await supabase.from('bookmark_lists')
-        .update({
-          title: collectionTitle,
-        })
-        .eq('id', collectionId);
-      toast('Collection updated', { type: 'success' });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsUpdatingCollectionTitle(false);
+    const { error } = await supabase.from('bookmark_lists')
+      .update({
+        title: collectionTitle,
+      })
+      .eq('id', collectionId);
+
+    if (error) {
+      console.error(error);
     }
   };
 
-  const removeBookmark = async (bookmark: Bookmark) => {
-    try {
-      setBookmarkToRemove(() => bookmark);
-      await supabase.from('bookmarks')
-        .delete()
-        .eq('id', bookmark.id);
-      setBookmarks((val) => val.filter((b) => b.id !== bookmark.id));
-      toast('Bookmark deleted', { type: 'success' });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setBookmarkToRemove(() => null);
+  const removeBookmarks = async () => {
+    if (bookmarkIdsToRemove.length <= 0) {
+      return;
     }
+
+    const { count, error } = await supabase.from('bookmarks')
+      .delete({ count: 'estimated' })
+      .in('id', bookmarkIdsToRemove);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    if (!count) {
+      toast('Something wrong happened', { type: 'error' });
+      return;
+    }
+
+    setBookmarks(bookmarksFiltered);
+    setBookmarkIdsToRemove([]);
   };
 
-  const removeCollection = async () => {
-    const confirm = window.confirm(`Are you sure you want to delete "${collectionTitle}"?`);
-
-    if (confirm) {
-      try {
-        setIsRemovingCollection(() => true);
-        const { error } = await supabase.from('bookmark_lists')
-          .delete()
-          .eq('id', collectionId);
-
-        if (error) {
-          toast('An error occurred', { type: 'error' });
-          return;
-        }
-
-        router.replace('/');
-        toast('Collection deleted', { type: 'success' });
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsRemovingCollection(() => false);
-      }
-    }
+  const removeBookmark = (bookmarkId: string) => {
+    setBookmarkIdsToRemove((val) => [...val, bookmarkId]);
   };
 
   const onBottomPageReached = async () => {
     await loadBookmarks();
+  };
+
+  const saveChanges = async () => {
+    setIsSaving(true);
+    await removeBookmarks();
+    await updateCollectionName();
+    setIsSaving(false);
+    onHide?.();
+
+    toast('Collection updated', { type: 'success' });
   };
 
   return (
@@ -131,32 +128,19 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
                   value={collectionTitle}
                   onChange={(event: ChangeEvent<HTMLInputElement>) => setCollectionTitle(event.target.value)}
                   placeholder="Collection name"
-                  className="block w-full bg-white/10 border-2 border-white/50 rounded-r-none border-r-0 rounded-xl outline-0 md:text-2xl px-3 py-2 focus:border-white"
+                  className="block w-full bg-white/10 border-2 border-white/50 rounded-xl outline-0 md:text-2xl px-3 py-2 focus:border-white"
                 />
-                <Button
-                  onClick={updateCollectionName}
-                  className="text-2xl md:text-4xl shrink-0 rounded-l-none"
-                  disabled={isUpdatingCollectionTitle || !collectionTitle}
-                >
-                  {
-                    isUpdatingCollectionTitle ? (
-                      <AiOutlineLoading className="animate-spin" />
-                    ) : (
-                      <FiSave />
-                    )
-                  }
-                </Button>
               </div>
-              <hr className="border-white/40 mb-3" />
+              <hr className="border-white/40" />
               {
-                bookmarks.length > 0 ? (
+                bookmarksFiltered.length > 0 ? (
                   <>
                     <ul>
                       {
-                        bookmarks.map((bookmark) => (
+                        bookmarksFiltered.map((bookmark) => (
                           <li
                             key={bookmark.id}
-                            className="flex items-center justify-between gap-3 border-b border-white/20 last-of-type:border-b-0 p-3 first-of-type:pt-0"
+                            className="flex items-center justify-between gap-3 border-b border-white/20 last-of-type:border-b-0 p-3"
                           >
                             <div className="flex items-center gap-2 md:gap-3 flex-1 truncate">
                               <Image
@@ -171,41 +155,42 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
                                 <p className="opacity-50 truncate">{bookmark.description}</p>
                               </div>
                             </div>
-                            <button
-                              onClick={() => removeBookmark(bookmark)}
-                              disabled={!!bookmarkToRemove}
-                              className="opacity-50 active:opacity-100 md:hover:opacity-100 text-3xl shrink-0 disabled:pointer-events-none"
-                            >
-                              {
-                                bookmarkToRemove?.id === bookmark.id ? (
-                                  <AiOutlineLoading className="animate-spin" />
-                                ) : (
-                                  <FiMinusCircle />
-                                )
-                              }
-                            </button>
+                            {
+                              (user?.id === bookmark.user_id || !bookmark.user_id) && (
+                                <button
+                                  onClick={() => removeBookmark(bookmark.id)}
+                                  className="opacity-50 active:opacity-100 md:hover:opacity-100 text-3xl shrink-0 disabled:pointer-events-none"
+                                >
+                                  <FiMinusCircle/>
+                                </button>
+                              )
+                            }
                           </li>
                         ))
                       }
                     </ul>
-                    <VisibilityObserver onVisible={onBottomPageReached} />
+                    <VisibilityObserver onVisible={onBottomPageReached}/>
                   </>
                 ) : (
-                  <p className="text-center opacity-80 pb-3 md:pb-6">No bookmarks here.</p>
+                  <p className="text-center opacity-80 py-6">No bookmarks here.</p>
                 )
               }
               <footer className="sticky bottom-0 bg-slate-950 border-t border-white/40 p-3">
                 <Button
-                  onClick={removeCollection}
-                  disabled={isRemovingCollection}
-                  className="w-full !bg-red-500 text-white flex items-center justify-center gap-1"
+                  onClick={saveChanges}
+                  disabled={isSaving}
+                  className="w-full text-xl flex items-center justify-center"
                 >
                   {
-                    isRemovingCollection && (
-                      <AiOutlineLoading className="animate-spin" />
+                    isSaving ? (
+                      <AiOutlineLoading
+                        size={28}
+                        className="animate-spin"
+                      />
+                    ) : (
+                      <span>Save</span>
                     )
                   }
-                  <span>Delete this collection</span>
                 </Button>
               </footer>
             </div>
