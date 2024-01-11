@@ -2,11 +2,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Bookmark, BookmarkCollection } from '@/types/bookmark';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useSupabase } from '@/lib/composables/useSupabase';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const LIMIT = 20;
 
 export const useCollection = (collectionId: string, autoload = true) => {
   const supabase = useSupabase();
+  const router = useRouter();
 
   const [collection, setCollection] = useState<BookmarkCollection>();
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
@@ -81,6 +84,33 @@ export const useCollection = (collectionId: string, autoload = true) => {
     }
   }, [loadBookmarks, loadCollection]);
 
+  const removeCollection = useCallback(async () => {
+    if (!collection) {
+      return;
+    }
+
+    const confirm = window.confirm(`Are you sure you want to delete "${collection.title}"?`);
+
+    if (confirm) {
+      const { count, error } = await supabase.from('bookmark_lists')
+        .delete({ count: 'estimated' })
+        .eq('id', collectionId);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      if (!count) {
+        toast('Something wrong happened', { type: 'error' });
+        return;
+      }
+
+      router.replace('/');
+      toast('Collection deleted', { type: 'success' });
+    }
+  }, [collection, collectionId, router, supabase]);
+
   useEffect(() => {
     if (autoload) {
       loadCollectionAndBookmarks(true)
@@ -98,5 +128,6 @@ export const useCollection = (collectionId: string, autoload = true) => {
     loadCollection,
     loadBookmarks,
     loadCollectionAndBookmarks,
+    removeCollection,
   };
 };
