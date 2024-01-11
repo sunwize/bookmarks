@@ -19,6 +19,7 @@ export const extractSpotifyMetadata = async (url: string): Promise<Omit<Bookmark
   const domainUrl = new URL(data.provider_url);
 
   return {
+    user_id: null,
     title: data.title,
     description: data.provider_name,
     image_url: data.thumbnail_url,

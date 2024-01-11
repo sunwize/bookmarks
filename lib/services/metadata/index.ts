@@ -32,6 +32,7 @@ export const extractMetadata = async (url: string): Promise<Omit<Bookmark, 'id'>
   const document = window.document;
 
   return {
+    user_id: null,
     title: extractTitle(document)!,
     description: extractDescription(document)!,
     image_url: extractImage(document) || extractFavicon(document, responseUrl),
