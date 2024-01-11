@@ -33,6 +33,7 @@ export default function Bookmarks() {
     isError,
     loadBookmarks,
     loadCollectionAndBookmarks,
+    removeCollection,
   } = useCollection(collectionId);
 
   const onBookmarkAction = () => {
@@ -91,11 +92,14 @@ export default function Bookmarks() {
     await loadBookmarks();
   };
 
-  const onCollectionAction = (type: CollectionActionType) => {
+  const onCollectionAction = async (type: CollectionActionType) => {
     switch (type) {
       case 'edit':
         setIsActionsVisible(false);
         setIsEditorVisible(true);
+        break;
+      case 'delete':
+        await removeCollection();
         break;
       default:
         break;
