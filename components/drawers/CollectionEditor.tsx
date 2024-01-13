@@ -16,7 +16,7 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 type Props = {
     visible: boolean
     collectionId: string
-    onHide?: () => void
+    onHide?: (changed: boolean) => void
 }
 
 export default function CollectionEditor({ visible, collectionId, onHide }: Props) {
@@ -102,7 +102,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
     await removeBookmarks();
     await updateCollectionName();
     setIsSaving(false);
-    onHide?.();
+    onHide?.(true);
 
     toast('Collection updated', { type: 'success' });
   };
@@ -110,7 +110,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
   return (
     <Drawer
       visible={visible}
-      onHide={onHide}
+      onHide={() => onHide?.(false)}
     >
       <div>
         {

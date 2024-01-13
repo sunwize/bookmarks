@@ -76,8 +76,8 @@ export default function Bookmarks() {
     ]);
   }, [bookmarks, setBookmarks, supabase]);
 
-  const onCloseEditor = () => {
-    if (isEditorVisible) {
+  const onCloseEditor = (changed: boolean) => {
+    if (isEditorVisible && changed) {
       loadCollectionAndBookmarks(true);
     }
     setIsEditorVisible(() => false);
