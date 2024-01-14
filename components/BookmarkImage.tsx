@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSupabase } from '@/lib/composables/useSupabase';
 import { extractMetadata } from '@/lib/utils/metadata';
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -54,6 +54,10 @@ export default function BookmarkImage({ bookmark, className, onError }: Props) {
     onError?.(newImageUrl);
   };
 
+  useEffect(() => {
+    setIsFallback(false);
+  }, [bookmark]);
+
   return (
     !isFallback ? (
       <Image
@@ -63,7 +67,7 @@ export default function BookmarkImage({ bookmark, className, onError }: Props) {
         height={150}
         quality={100}
         onError={_onLoadImageError}
-        className={`aspect-square object-cover rounded-xl ${className}`}
+        className={`w-[70px] aspect-square object-cover rounded-xl ${className}`}
       />
     ) : (
       <div className={`flex items-center justify-center w-[70px] aspect-square bg-white/10 rounded-xl ${className}`}>
