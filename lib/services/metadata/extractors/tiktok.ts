@@ -19,7 +19,6 @@ export const extractTikTokMetadata = async (url: string): Promise<Omit<Bookmark,
   const domainUrl = new URL(data.provider_url);
 
   return {
-    user_id: null,
     title: data.author_name,
     description: data.title,
     image_url: data.thumbnail_url,

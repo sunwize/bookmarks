@@ -26,7 +26,6 @@ export const loadMetadata = async (url: string): Promise<Omit<Bookmark, 'id'>> =
   });
 
   return {
-    user_id: null,
     title: data.title,
     description: data.description,
     url: data.url,
