@@ -3,11 +3,7 @@ import { JSDOM } from 'jsdom';
 import { extractDescription, extractFavicon, extractImage, extractSitename, extractTitle } from '@/lib/services/metadata/utils';
 import { MetadataExtractors } from '@/lib/services/metadata/extractors';
 import { Bookmark } from '@/types/bookmark';
-
-const getPrimaryDomainName = (domain: string) => {
-  const tab = domain.split('.');
-  return tab.slice(tab.length - 2, tab.length).join('.');
-};
+import { getPrimaryDomainName } from '@/lib/utils/metadata';
 
 export const extractMetadata = async (url: string): Promise<Omit<Bookmark, 'id'>> => {
   const response = await axios.get<string>(url, {
@@ -21,7 +17,7 @@ export const extractMetadata = async (url: string): Promise<Omit<Bookmark, 'id'>
   // For instance Amazon will redirect from https://a.co/... to https://www.amazon.ca/...
   const responseUrl = response.request.res.responseUrl as string;
   const urlObject = new URL(responseUrl);
-  const domainName = getPrimaryDomainName(urlObject.hostname);
+  const domainName = getPrimaryDomainName(responseUrl);
 
   if (domainName in MetadataExtractors) {
     const extractor = MetadataExtractors[domainName];
@@ -32,7 +28,6 @@ export const extractMetadata = async (url: string): Promise<Omit<Bookmark, 'id'>
   const document = window.document;
 
   return {
-    user_id: null,
     title: extractTitle(document)!,
     description: extractDescription(document)!,
     image_url: extractImage(document) || extractFavicon(document, responseUrl),
