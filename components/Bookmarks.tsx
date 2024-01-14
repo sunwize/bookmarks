@@ -8,7 +8,6 @@ import { MdOutlineBookmarkAdd } from 'react-icons/md';
 
 import { Bookmark } from '@/types/bookmark';
 import { useSupabase } from '@/lib/composables/useSupabase';
-import { extractMetadata } from '@/lib/utils/metadata';
 import { DialogsContext } from '@/lib/contexts/DialogsContext';
 import { useCollection } from '@/lib/composables/useCollection';
 import Button from '@/components/ui/Button';
@@ -56,25 +55,18 @@ export default function Bookmarks() {
       .subscribe();
   };
 
-  const onLoadImageError = useCallback(async (index: number) => {
+  const onLoadImageError = useCallback(async (index: number, newImageUrl: string) => {
     const bookmark = bookmarks[index];
-    const { image_url: imageUrl } = await extractMetadata(bookmark.url);
-
-    await supabase.from('bookmarks')
-      .update({
-        image_url: imageUrl,
-      })
-      .eq('id', bookmark.id);
 
     setBookmarks((val) => [
       ...val.slice(0, index),
       {
         ...bookmark,
-        image_url: imageUrl,
+        image_url: newImageUrl,
       },
       ...val.slice(index + 1, val.length),
     ]);
-  }, [bookmarks, setBookmarks, supabase]);
+  }, [bookmarks, setBookmarks]);
 
   const onCloseEditor = (changed: boolean) => {
     if (isEditorVisible && changed) {
@@ -158,7 +150,7 @@ export default function Bookmarks() {
                       <li key={bookmark.id}>
                         <BookmarkItem
                           bookmark={bookmark}
-                          onLoadImageError={() => onLoadImageError(index)}
+                          onLoadImageError={(newImageUrl) => onLoadImageError(index, newImageUrl)}
                         />
                       </li>
                     ))

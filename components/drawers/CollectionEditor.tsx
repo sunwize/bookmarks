@@ -3,7 +3,6 @@
 import { ChangeEvent, useMemo, useState } from 'react';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { FiMinusCircle } from 'react-icons/fi';
-import Image from 'next/image';
 import { toast } from 'react-toastify';
 
 import { useSupabase } from '@/lib/composables/useSupabase';
@@ -12,6 +11,7 @@ import Button from '@/components/ui/Button';
 import Drawer from '@/components/ui/Drawer';
 import VisibilityObserver from '@/components/VisibilityObserver';
 import { useAuth } from '@/lib/contexts/AuthContext';
+import BookmarkImage from '@/components/BookmarkImage';
 
 type Props = {
     visible: boolean
@@ -123,7 +123,7 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
             </div>
           ) : (
             <div>
-              <div className="flex items-center justify-between p-3">
+              <div className="sticky top-0 bg-slate-950 z-10 flex items-center justify-between border-b border-white/40 p-3">
                 <input
                   value={collectionTitle}
                   onChange={(event: ChangeEvent<HTMLInputElement>) => setCollectionTitle(event.target.value)}
@@ -131,7 +131,6 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
                   className="block w-full bg-white/10 border-2 border-white/50 rounded-xl outline-0 md:text-2xl px-3 py-2 focus:border-white"
                 />
               </div>
-              <hr className="border-white/40" />
               {
                 bookmarksFiltered.length > 0 ? (
                   <>
@@ -143,12 +142,9 @@ export default function CollectionEditor({ visible, collectionId, onHide }: Prop
                             className="flex items-center justify-between gap-3 border-b border-white/20 last-of-type:border-b-0 p-3"
                           >
                             <div className="flex items-center gap-2 md:gap-3 flex-1 truncate">
-                              <Image
-                                src={bookmark.image_url}
-                                alt={bookmark.title}
-                                width={256}
-                                height={256}
-                                className="w-[50px] md:w-[70px] aspect-square object-cover rounded-lg shrink-0"
+                              <BookmarkImage
+                                bookmark={bookmark}
+                                className="!w-[50px] md:!w-[70px] shrink-0"
                               />
                               <div className="truncate">
                                 <p className="text-lg md:text-xl font-medium truncate">{bookmark.title}</p>
