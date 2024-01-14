@@ -1,6 +1,6 @@
 export type Bookmark = {
     id: string
-    user_id: string | null
+    user_id?: string
     title: string
     description: string
     url: string
